@@ -6,6 +6,7 @@ Home
 
 <script>
 import Home from './components/home.vue'
+import axios from "axios";
 
 export default {
   name: 'App',
