@@ -1,23 +1,18 @@
-<template>
-  <h1>Apple2Spotify-Playlist</h1>
+<template lang="pug">
+nav(class="bg-black p-8 text-center font-bold text-5xl md:text-6xl text-gray-300")
+  h1 Playlistify
+Home
 </template>
 
 <script>
+import Home from './components/home.vue'
 
 export default {
   name: 'App',
-  components: {
-  }
+  components: { Home }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
