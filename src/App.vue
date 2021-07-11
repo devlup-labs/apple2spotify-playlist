@@ -1,5 +1,6 @@
-<template>
-  <h1>Apple2Spotify-Playlist</h1>
+<template lang='pug'>
+div
+  h1 Apple2Spotify-Playlist
 </template>
 
 <script>
@@ -17,7 +18,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #394f64;
   margin-top: 60px;
 }
 </style>
