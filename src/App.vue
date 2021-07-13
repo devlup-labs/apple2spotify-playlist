@@ -1,16 +1,19 @@
 <template lang='pug'>
 div
   h1 Apple2Spotify-Playlist
+Home
 </template>
 
 <script>
 import axios from "axios";
-
+import Home from "./components/Home.vue"
 export default {
   name: 'App',
   components: {
+    Home,
   }
 }
+
 </script>
 
 <style>
