@@ -10,9 +10,11 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "particles.vue3": "^1.14.2",
     "pug": "^3.0.2",
     "pug-plain-loader": "^1.1.0",
-    "vue": "^3.0.0"
+    "tsparticles": "^1.31.1",
+    "vue": "^3.1.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
