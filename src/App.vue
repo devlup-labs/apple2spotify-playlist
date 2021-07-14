@@ -1,7 +1,6 @@
 <template lang='pug'>
 div
   h1 Apple2Spotify-Playlist
-Home
 </template>
 
 <script>
