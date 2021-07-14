@@ -5,12 +5,31 @@ div
 
 <script>
 import axios from "axios";
-
 export default {
   name: 'App',
-  components: {
-  }
-}
+  data() {
+    return {
+      step: 1,
+      code: null,
+    };
+  },
+  methods: {
+    updateStep() {
+      let urlParams = new URLSearchParams(location.search);
+      if (urlParams.get("code")) {
+        this.code = urlParams.get("code");
+        const url = [location.protocol, '//', location.host, location.pathname].join('');
+        window.history.pushState({}, "", url);
+      }
+      if (this.code !== null) {
+        this.step = 2;
+      }
+    },
+  },
+  mounted() {
+    this.updateStep();
+  },
+};
 </script>
 
 <style>
