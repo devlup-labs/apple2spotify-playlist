@@ -6,14 +6,32 @@ Home
 
 <script>
 import axios from "axios";
-import Home from "./components/Home.vue"
 export default {
-  name: 'App',
-  components: {
-    Home,
-  }
-}
-
+  name: "App",
+  components: {},
+  data() {
+    return {
+      step: 1,
+      code: null,
+    };
+  },
+  methods: {
+    stateUpdater() {
+      let urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("code")) {
+        this.code = urlParams.get("code");
+      }
+      const url = new URL("http://localhost:8080/");
+      window.history.pushState({}, "", url);
+      if (this.code !== null) {
+        this.step = 2;
+      }
+    },
+  },
+  mounted() {
+    this.stateUpdater();
+  },
+};
 </script>
 
 <style>
