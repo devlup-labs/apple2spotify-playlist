@@ -19,7 +19,6 @@ export default {
   components: { Home, Stepper },
   data() {
     return {
-      URL: "https://svgshare.com/i/Z7Q.svg",
       options: options,
     };
   },
@@ -37,14 +36,12 @@ export default {
 nav {
   font-family: "Noto Sans JP", sans-serif;
 }
-
 .tracking-in-contract-bck {
   -webkit-animation: tracking-in-contract-bck 2s
     cubic-bezier(0.215, 0.61, 0.355, 1) both;
   animation: tracking-in-contract-bck 2s cubic-bezier(0.215, 0.61, 0.355, 1)
     both;
 }
-
 @-webkit-keyframes tracking-in-contract-bck {
   0% {
     letter-spacing: 1em;

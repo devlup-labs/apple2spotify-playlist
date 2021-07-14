@@ -5,7 +5,7 @@
       h2.mt-8 Convert an
       h2.mt-8 Apple playlist
       h2.mt-8 into a Spotify playlist.
-      button(@click = "emitX" class=" mt-16 pt-2 pb-3 px-4 text-black hover:shadow-inner button hover:text-black text-center text-lg font-semibold rounded-full")
+      button(@click = "emitClickEvent" class=" mt-16 pt-2 pb-3 px-4 text-black hover:shadow-inner button hover:text-black text-center text-lg font-semibold rounded-full")
         span.mx-4 Convert Playlist
   div
     img(class="mt-6 mx-auto md:mt-0 md:h-96 md:mr-40"
@@ -16,7 +16,7 @@
 <script>
 export default {
   methods: {
-    emitX() {
+    emitClickEvent() {
       this.$emit("clicked");
     },
   },

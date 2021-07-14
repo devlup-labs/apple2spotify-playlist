@@ -69,15 +69,6 @@
         "value": 1
       },
       "shape": {
-        "character": [
-          {
-            "fill": true,
-            "font": "Verdana",
-            "value": ["💩", "🤡", "🍀", "🍙"],
-            "style": "",
-            "weight": 400
-          }
-        ],
         "image": [
         {
           "height": 100,
