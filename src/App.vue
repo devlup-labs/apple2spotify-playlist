@@ -10,16 +10,19 @@
 </template>
 
 <script>
+import axios from "axios";
 import Home from "./components/home.vue";
 import Stepper from "./components/stepper.vue";
 import options from "./particles.json";
 
 export default {
-  name: "App",
+  name: 'App',
   components: { Home, Stepper },
   data() {
     return {
-      options: options,
+      step: 1,
+      code: null,
+      options: options
     };
   },
   methods: {
@@ -28,6 +31,20 @@ export default {
       var top = element.offsetTop;
       window.scroll({ left: 0, top, behavior: "smooth" });
     },
+    updateStep() {
+      let urlParams = new URLSearchParams(location.search);
+      if (urlParams.get("code")) {
+        this.code = urlParams.get("code");
+        const url = [location.protocol, '//', location.host, location.pathname].join('');
+        window.history.pushState({}, "", url);
+      }
+      if (this.code !== null) {
+        this.step = 2;
+      }
+    },
+  },
+  mounted() {
+    this.updateStep();
   },
 };
 </script>
