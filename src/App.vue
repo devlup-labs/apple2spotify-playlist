@@ -1,44 +1,65 @@
-<template lang='pug'>
-div
-  h1 Apple2Spotify-Playlist
+<template>
+  <div>
+    <center>
+      <h1>Playlistify</h1>
+      <div id="button">
+      <button v-on:click="change">Convert</button>
+      </div>
+      <br>
+      <loader :clicked="this.started" />
+      <statusChanger :message="this.message" />
+    </center>  
+  </div>
 </template>
 
 <script>
-import axios from "axios";
-export default {
-  name: 'App',
-  data() {
-    return {
-      step: 1,
-      code: null,
-    };
-  },
-  methods: {
-    updateStep() {
-      let urlParams = new URLSearchParams(location.search);
-      if (urlParams.get("code")) {
-        this.code = urlParams.get("code");
-        const url = [location.protocol, '//', location.host, location.pathname].join('');
-        window.history.pushState({}, "", url);
-      }
-      if (this.code !== null) {
-        this.step = 2;
-      }
+  import loader from "./components/loader"
+  import statusChanger from "./components/statusChanger"
+
+  export default {
+    name: 'App',
+    components: {
+      loader,
+      statusChanger,
     },
-  },
-  mounted() {
-    this.updateStep();
-  },
-};
+
+    data(){
+      return {message: "", started: false}
+    },
+
+
+    methods: {
+      change: function () {
+        this.started = true;
+        this.message = "Extracting from Apple Playlist"
+        setTimeout(() => {
+          this.message = "Creating Playlist",
+          setTimeout(() => {
+            this.message = "Adding Songs",
+            setTimeout(() => {
+              this.message = "Done",
+              this.started = false
+            }, 2000)
+          }, 2000)
+        }, 2000)
+      },
+    }
+  }
 </script>
 
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #394f64;
-  margin-top: 60px;
-}
+  #app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    background-color: white;
+    color: black;
+    margin-top: 60px;
+  } 
+
+  #button {
+    padding-top: 20px;
+  }
 </style>

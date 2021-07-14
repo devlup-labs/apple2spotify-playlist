@@ -1,5 +1,5 @@
 {
-  "name": "apple2spotify-playlist",
+  "name": "playlist-loader",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,8 +10,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "pug": "^3.0.2",
-    "pug-plain-loader": "^1.1.0",
+    "epic-spinners": "^1.1.0",
     "vue": "^3.0.0"
   },
   "devDependencies": {
