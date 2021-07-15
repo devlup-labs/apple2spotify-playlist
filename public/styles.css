@@ -3,9 +3,6 @@
 @tailwind utilities;
 @import url("https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500&family=Roboto:wght@400;500&display=swap");
 
-body{
-    background-color: black;
-}
-body::-webkit-scrollbar{
-    display: none;
+body {
+  background-color: black;
 }
