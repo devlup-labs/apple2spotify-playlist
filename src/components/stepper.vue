@@ -23,6 +23,7 @@ export default {
       spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private",
       plink:'',
       isprivate : false,
+      spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private", 
     }
   },
   methods:{
@@ -38,10 +39,12 @@ export default {
 .stepper{
     height: 800px;
 }
+
 .field{
   position:relative;
 }
 .btn{
   position:relative;
 }
+
 </style>
