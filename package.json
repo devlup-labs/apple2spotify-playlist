@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "pug": "^3.0.2",
     "pug-plain-loader": "^1.1.0",
+    "querystring": "^0.2.1",
     "vue": "^3.0.0"
   },
   "devDependencies": {
