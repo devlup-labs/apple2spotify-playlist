@@ -2,7 +2,7 @@
 div
   h1(class="text-4xl m-5") Apple2Spotify-Playlist
   div
-   input(class="text border py-2 px-3 text-grey-darkest rounded-xl m-5 border-blue-400" v-model="message" placeholder="Enter the apple playlist link here")
+   input(class="text border py-2 px-3 text-grey-darkest rounded-xl m-5 border-blue-400" v-model="plink" placeholder="Enter the apple playlist link here")
    div
       label Make your playlist private
       input(class="ml-2 h-4 w-4" type="checkbox" v-model="private")
@@ -17,7 +17,7 @@ export default {
   },
   data(){
     return{
-      message:'',
+      plink:'',
       private : false
     }
   }
