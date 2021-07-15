@@ -10,18 +10,24 @@
 </template>
 
 <script>
-//import axios from "axios";
+import axios from "axios";
 import Home from "./components/home.vue";
 import Stepper from "./components/stepper.vue";
 import options from "./particles.json";
-
+import qs from 'qs';
 export default {
   name: 'App',
   components: { Home, Stepper },
   data() {
     return {
       step: 1,
-      code: null,
+      CODE: null,
+      token: null,
+        headers: {
+            headers:{
+              'Content-type':'application/x-www-form-urlencoded'
+            }
+        },
       options: options
     };
   },
@@ -31,19 +37,57 @@ export default {
       var top = element.offsetTop;
       window.scroll({ left: 0, top, behavior: "smooth" });
     },
+    code() {
+
+      var DATA = {
+            grant_type:"authorization_code",
+            code:this.CODE,
+            redirect_uri:"http://localhost:8080/",
+            client_id:"SPOTIFY_CLIENT_ID",
+            client_secret:"SPOTIFY_CLIENT_SECRET"
+        };
+
+      var data = qs.stringify(DATA);
+      var headers = this.headers;
+      var URL= 'https://cors.darpan.online/https://accounts.spotify.com/api/token';
+      axios({
+        method:'post',
+        url:URL,
+        data,
+        headers
+      }).then(res =>{
+        this.token = res.data.access_token;
+        var head = {
+            headers:{
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${this.token}`
+            }
+        }
+        axios.get('https://api.spotify.com/v1/me',
+        head).then(res =>{
+            console.log(res.data);
+        }).catch(err =>{
+            console.log(err);
+        })   
+        }).catch(err =>{
+        console.log(err);
+        })
+    },
     updateStep() {
       let urlParams = new URLSearchParams(location.search);
       if (urlParams.get("code")) {
-        this.code = urlParams.get("code");
+        this.CODE = urlParams.get("code");
         const url = [location.protocol, '//', location.host, location.pathname].join('');
         window.history.pushState({}, "", url);
       }
-      if (this.code !== null) {
+      if (this.CODE !== null) {
         this.step = 2;
+        this.code();
       }
     },
-  },
-  mounted() {
+   },
+    mounted() {
     this.updateStep();
   },
 };
