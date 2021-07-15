@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import axios from "axios";
+//import axios from "axios";
 import Home from "./components/home.vue";
 import Stepper from "./components/stepper.vue";
 import options from "./particles.json";
