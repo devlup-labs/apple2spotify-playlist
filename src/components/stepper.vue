@@ -20,6 +20,9 @@ export default {
     return {
       clientId: "SPOTIFY_CLIENT_ID",
       redirectUri:"http://localhost:8080/", 
+      spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private",
+      plink:'',
+      isprivate : false,
       spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private", 
       isprivate:false,
       plink:''
@@ -29,7 +32,7 @@ export default {
     loggingToSpotify() { 
       var url =`https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.sotifyScopes}&state=34fFs29kd09`;
       window.location.href = url; 
-      }, 
+      }
   }
 }
 </script>
@@ -37,6 +40,13 @@ export default {
 <style>
 .stepper{
     height: 800px;
+}
+
+.field{
+  position:relative;
+}
+.btn{
+  position:relative;
 }
 
 </style>
