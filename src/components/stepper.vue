@@ -23,9 +23,6 @@ export default {
       spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private",
       plink:'',
       isprivate : false,
-      spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private", 
-      isprivate:false,
-      plink:''
     }
   },
   methods:{

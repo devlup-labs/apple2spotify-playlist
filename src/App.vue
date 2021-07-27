@@ -14,20 +14,18 @@ import axios from "axios";
 import Home from "./components/home.vue";
 import Stepper from "./components/stepper.vue";
 import options from "./particles.json";
-import qs from 'qs';
 export default {
   name: 'App',
   components: { Home, Stepper },
   data() {
     return {
       step: 1,
-      CODE: null,
+      Code: null,
       token: null,
-        headers: {
-            headers:{
-              'Content-type':'application/x-www-form-urlencoded'
-            }
-        },
+      userid: null,
+      headers: {
+            'Content-type':'application/x-www-form-urlencoded'  
+      },
       options: options
     };
   },
@@ -37,35 +35,37 @@ export default {
       var top = element.offsetTop;
       window.scroll({ left: 0, top, behavior: "smooth" });
     },
-    code() {
+    codeValidate() {
 
-      var DATA = {
+      var Data = new URLSearchParams ({
             grant_type:"authorization_code",
-            code:this.CODE,
+            code:this.Code,
             redirect_uri:"http://localhost:8080/",
             client_id:"SPOTIFY_CLIENT_ID",
             client_secret:"SPOTIFY_CLIENT_SECRET"
-        };
+        });
 
-      var data = qs.stringify(DATA);
+      var data = Data.toString();
       var headers = this.headers;
       var URL= 'https://cors.darpan.online/https://accounts.spotify.com/api/token';
       axios({
         method:'post',
         url:URL,
         data,
-        headers
+        headers:headers
       }).then(res =>{
         this.token = res.data.access_token;
         var head = {
-            headers:{
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${this.token}`
-            }
-        }
-        axios.get('https://api.spotify.com/v1/me',
-        head).then(res =>{
+            "Authorization": `Bearer ${this.token}`    
+        };
+        axios({
+          method:'get',
+          url:'https://api.spotify.com/v1/me',
+          headers:head
+          }).then(res =>{
+            this.userid = res.data.id;
             console.log(res.data);
         }).catch(err =>{
             console.log(err);
@@ -77,15 +77,15 @@ export default {
     updateStep() {
       let urlParams = new URLSearchParams(location.search);
       if (urlParams.get("code")) {
-        this.CODE = urlParams.get("code");
+        this.Code = urlParams.get("code");
         const url = [location.protocol, '//', location.host, location.pathname].join('');
         window.history.pushState({}, "", url);
       }
-      if (this.CODE !== null) {
+      if (this.Code !== null) {
         this.step = 2;
-        this.code();
+        this.codeValidate();
       }
-    },
+    }
    },
     mounted() {
     this.updateStep();
