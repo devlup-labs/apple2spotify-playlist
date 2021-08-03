@@ -6,11 +6,11 @@
     span.tracking-widest.pr-7.pl-7.font-bold LOG IN
   div(class="field")
    h1.text-white.text-3xl.mt-10.mb-2.tracking-wide Playlist link
-   input(class="text-gray-700 font-bold mb-2 rounded-full w-72 h-7" type="text" v-model="plink" placeholder="Enter the apple playlist link here")
+   input(class="text-gray-700 font-bold mb-2 rounded-full w-72 h-7" type="text" v-model="pLink" placeholder="Enter the apple playlist link here")
   div(class="mt-5")
    label.text-white.tracking-wider.pt-10 Make your playlist private
    input(class="btn ml-2 h-4 w-4" type="checkbox" v-model="isprivate")
-  button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" @click="getPlaylistInfoFromApple(plink)")
+  button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" @click="getPlaylistInfoFromApple(pLink)")
    span.tracking-widest.pr-7.pl-7.font-bold CONVERT
 </template>
 
@@ -23,16 +23,15 @@ export default {
       redirectUri: "http://localhost:8080/",
       spotifyScopes:
         "user-read-email playlist-modify-public playlist-modify-private",
-      plink: "",
+      pLink: "",
       isprivate: false,
-      Playlist: {
+      playlist: {
         name: "",
-        length: 0,
+        length: null,
         songs: [],
       },
       playlistLength: 0,
       PlaylistCode: "",
-      playlistLenght: null,
       token:
         "Bearer eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IldlYlBsYXlLaWQifQ.eyJpc3MiOiJBTVBXZWJQbGF5IiwiaWF0IjoxNjIyMjUxNTA1LCJleHAiOjE2Mzc4MDM1MDV9.qaZGFoe0pn7-8K0MDbAp2c35nEtrQKz_v4UN2BF4jR7NR2vGKHTzurwsk-rZZUvVjtdqSj5Pli5AKzGn5_OLbQ",
     };
@@ -42,36 +41,36 @@ export default {
       var url = `https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.sotifyScopes}&state=34fFs29kd09`;
       window.location.href = url;
     },
-    getPlaylistInfoFromApple(plink) {
-      this.PlaylistCode = plink.split("/");
+    getPlaylistInfoFromApple(pLink) {
+      this.PlaylistCode = pLink.split("/");
       this.PlaylistCode = this.PlaylistCode[this.PlaylistCode.length - 1];
-      plink =
-        "https://cors-anywhere.herokuapp.com/https://amp-api.music.apple.com/v1/catalog/in/playlists/" +
+      pLink =
+        "https://cors.darpan.online/https://amp-api.music.apple.com/v1/catalog/in/playlists/" +
         this.PlaylistCode;
 
       axios({
         method: "get",
-        url: plink,
+        url: pLink,
         headers: { Authorization: this.token },
       }).then(
         (response) => {
           var data = response.data;
-          this.Playlist["name"] = data["data"][0]["attributes"]["name"];
-          this.playlistLength =
+          this.playlist["name"] = data["data"][0]["attributes"]["name"];
+          this.playlist["length"] =
             data["data"][0]["relationships"]["tracks"]["data"].length;
         },
-        (error) => {
-          console.log(error);
+        () => {
+          console.error();
         }
       );
       this.getSongsFromApple();
     },
-    async getSongsFromApple(plink) {
-      var url = plink;
-      while (this.Playlist["length"] % 100 === 0) {
-        this.playlistLength = this.Playlist["length"];
-        url =
-          "https://cors-anywhere.herokuapp.com/https://amp-api.music.apple.com/v1/catalog/in/playlists/" +
+    async getSongsFromApple() {
+      while (this.playlist["length"] % 100 === 0) {
+        console.log(this.playlist["length"]);
+        this.playlistLength = this.playlist["length"];
+        var url =
+          "https://cors.darpan.online/https://amp-api.music.apple.com/v1/catalog/in/playlists/" +
           this.PlaylistCode +
           "/tracks/?offset=" +
           this.playlistLength;
@@ -83,15 +82,16 @@ export default {
           (response) => {
             var data = response.data;
             this.playlistLength = data["data"].length;
-            this.Playlist["length"] += this.playlistLength;
+            this.playlist["length"] += this.playlistLength;
             for (let i = 0; i < this.playlistLength; i++) {
               let songName = data["data"][i]["attributes"]["name"];
               let artistName = data["data"][i]["attributes"]["artistName"];
-              this.Playlist["songs"].push({
+              this.playlist["songs"].push({
                 songname: songName,
                 artist: artistName,
               });
             }
+            console.log(this.playlist);
           },
           (error) => {
             console.log(error);
