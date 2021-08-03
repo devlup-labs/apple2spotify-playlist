@@ -31,9 +31,8 @@ export default {
         songs: [],
       },
       playlistLength: 0,
-      PlaylistCode: "",
-      token:
-        "Bearer eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IldlYlBsYXlLaWQifQ.eyJpc3MiOiJBTVBXZWJQbGF5IiwiaWF0IjoxNjIyMjUxNTA1LCJleHAiOjE2Mzc4MDM1MDV9.qaZGFoe0pn7-8K0MDbAp2c35nEtrQKz_v4UN2BF4jR7NR2vGKHTzurwsk-rZZUvVjtdqSj5Pli5AKzGn5_OLbQ",
+      playlistCode: "",
+      token: "appleToken",
     };
   },
   methods: {
@@ -42,11 +41,11 @@ export default {
       window.location.href = url;
     },
     getPlaylistInfoFromApple(pLink) {
-      this.PlaylistCode = pLink.split("/");
-      this.PlaylistCode = this.PlaylistCode[this.PlaylistCode.length - 1];
+      this.playlistCode = pLink.split("/");
+      this.playlistCode = this.playlistCode[this.playlistCode.length - 1];
       pLink =
         "https://cors.darpan.online/https://amp-api.music.apple.com/v1/catalog/in/playlists/" +
-        this.PlaylistCode;
+        this.playlistCode;
 
       axios({
         method: "get",
@@ -67,11 +66,10 @@ export default {
     },
     async getSongsFromApple() {
       while (this.playlist["length"] % 100 === 0) {
-        console.log(this.playlist["length"]);
         this.playlistLength = this.playlist["length"];
         var url =
           "https://cors.darpan.online/https://amp-api.music.apple.com/v1/catalog/in/playlists/" +
-          this.PlaylistCode +
+          this.playlistCode +
           "/tracks/?offset=" +
           this.playlistLength;
         await axios({
@@ -91,7 +89,6 @@ export default {
                 artist: artistName,
               });
             }
-            console.log(this.playlist);
           },
           (error) => {
             console.log(error);
