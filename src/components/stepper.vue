@@ -10,55 +10,29 @@
   div(class="mt-5")
    label.text-white.tracking-wider.pt-10 Make your playlist private
    input(class="btn ml-2 h-4 w-4" type="checkbox" v-model="isprivate")
-  button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" v-on:click="change")
+  button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white")
    span.tracking-widest.pr-7.pl-7.font-bold CONVERT
-  div(v-if="this.started")
-   loader(:render="this.started" :text="this.message" :value="this.value")
 </template>
 
 <script>
-import loader from "./loader"
-
 export default {
-  components: {loader},
   data(){
     return {
-      message: "",
-      value: 0,
-      started: false,
       clientId: "SPOTIFY_CLIENT_ID",
       redirectUri:"http://localhost:8080/", 
       spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private",
       plink:'',
       isprivate : false,
+      spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private", 
+      isprivate:false,
+      plink:''
     }
   },
   methods:{
     loggingToSpotify() { 
       var url =`https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.sotifyScopes}&state=34fFs29kd09`;
       window.location.href = url; 
-    },
-
-    change() {
-      this.started = true;
-      this.message = "Extracting"
-      setTimeout(() => {
-        this.value+=30
-        this.message = "Creating Playlist",
-        setTimeout(() => {
-          this.value+=30
-          this.message = "Adding Songs",
-          setTimeout(() => {
-            this.value+=40
-            this.message = "Done",
-            setTimeout(() => {
-              this.started = false;
-              this.value=0;
-            }, 2000)
-          }, 2000)
-        }, 2000)
-      }, 2000)
-    },
+      }
   }
 }
 </script>
