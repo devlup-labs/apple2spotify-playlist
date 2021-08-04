@@ -20,9 +20,9 @@ export default {
   data() {
     return {
       step: 1,
-      Code: null,
+      code: null,
       token: null,
-      userid: null,
+      userId: null,
       headers: {
             'Content-type':'application/x-www-form-urlencoded'  
       },
@@ -35,17 +35,17 @@ export default {
       var top = element.offsetTop;
       window.scroll({ left: 0, top, behavior: "smooth" });
     },
-    codeValidate() {
+    validateCode() {
 
-      var Data = new URLSearchParams ({
+      var data =  new URLSearchParams ({
             grant_type:"authorization_code",
-            code:this.Code,
+            code:this.code,
             redirect_uri:"http://localhost:8080/",
             client_id:"SPOTIFY_CLIENT_ID",
             client_secret:"SPOTIFY_CLIENT_SECRET"
-        });
+      });
 
-      var data = Data.toString();
+      data = data.toString();
       var headers = this.headers;
       var URL= 'https://cors.darpan.online/https://accounts.spotify.com/api/token';
       axios({
@@ -55,7 +55,7 @@ export default {
         headers:headers
       }).then(res =>{
         this.token = res.data.access_token;
-        var head = {
+        var header = {
             "Accept": "application/json",
             "Content-Type": "application/json",
             "Authorization": `Bearer ${this.token}`    
@@ -63,27 +63,27 @@ export default {
         axios({
           method:'get',
           url:'https://api.spotify.com/v1/me',
-          headers:head
-          }).then(res =>{
-            this.userid = res.data.id;
+          headers:header
+        }).then(res =>{
+            this.userId = res.data.id;
             console.log(res.data);
         }).catch(err =>{
-            console.log(err);
+            console.error(err);
         })   
         }).catch(err =>{
-        console.log(err);
+            console.error(err);
         })
     },
     updateStep() {
       let urlParams = new URLSearchParams(location.search);
       if (urlParams.get("code")) {
-        this.Code = urlParams.get("code");
+        this.code = urlParams.get("code");
         const url = [location.protocol, '//', location.host, location.pathname].join('');
         window.history.pushState({}, "", url);
       }
-      if (this.Code !== null) {
+      if (this.code !== null) {
         this.step = 2;
-        this.codeValidate();
+        this.validateCode();
       }
     }
    },
