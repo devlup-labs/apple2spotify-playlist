@@ -123,6 +123,11 @@ export default {
 .stepper {
   height: 800px;
 }
+.box{
+  margin-left: 20px;
+  margin-right: 20px;
+  padding: 30px;
+}
 
 .field {
   position: relative;
