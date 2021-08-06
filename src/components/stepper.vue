@@ -23,17 +23,32 @@ export default {
   components: {loader},
   data(){
     return {
+      step: 1,
       message: "",
       value: 0,
       started: false,
+      step: 1, 
       clientId: "SPOTIFY_CLIENT_ID",
-      redirectUri:"http://localhost:8080/", 
-      spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private",
-      plink:'',
-      isprivate : false,
+      redirectUri: "http://localhost:8080/",
+      spotifyScopes:
+        "user-read-email playlist-modify-public playlist-modify-private",
+      pLink: "",
+      isprivate: false,
+      playlist: {
+        name: "",
+        length: null,
+        songs: [],
+      },
+      playlistLength: 0,
+      playlistCode: "",
+      token: "appleToken",
     }
   },
   methods:{
+    addStep() {
+      this.step += 1;
+    },
+    
     loggingToSpotify() { 
       var url =`https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.sotifyScopes}&state=34fFs29kd09`;
       window.location.href = url; 
@@ -59,7 +74,63 @@ export default {
         }, 2000)
       }, 2000)
     },
-  }
+    
+    getPlaylistInfoFromApple(pLink) {
+      this.playlistCode = pLink.split("/");
+      this.playlistCode = this.playlistCode[this.playlistCode.length - 1];
+      pLink =
+        "https://cors.darpan.online/https://amp-api.music.apple.com/v1/catalog/in/playlists/" +
+        this.playlistCode;
+      axios({
+        method: "get",
+        url: pLink,
+        headers: { Authorization: this.token },
+      }).then(
+        (response) => {
+          var data = response.data;
+          this.playlist["name"] = data["data"][0]["attributes"]["name"];
+          this.playlist["length"] =
+            data["data"][0]["relationships"]["tracks"]["data"].length;
+        },
+        () => {
+          console.error();
+        }
+      );
+      this.getSongsFromApple();
+    },
+    async getSongsFromApple() {
+      while (this.playlist["length"] % 100 === 0) {
+        this.playlistLength = this.playlist["length"];
+        var url =
+          "https://cors.darpan.online/https://amp-api.music.apple.com/v1/catalog/in/playlists/" +
+          this.playlistCode +
+          "/tracks/?offset=" +
+          this.playlistLength;
+        await axios({
+          method: "get",
+          url: url,
+          headers: { Authorization: this.token },
+        }).then(
+          (response) => {
+            var data = response.data;
+            this.playlistLength = data["data"].length;
+            this.playlist["length"] += this.playlistLength;
+            for (let i = 0; i < this.playlistLength; i++) {
+              let songName = data["data"][i]["attributes"]["name"];
+              let artistName = data["data"][i]["attributes"]["artistName"];
+              this.playlist["songs"].push({
+                songname: songName,
+                artist: artistName,
+              });
+            }
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      }
+    }, 
+  },
 }
 </script>
 
