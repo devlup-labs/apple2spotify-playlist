@@ -1,34 +1,47 @@
-<template lang='pug'>
-.stepper.pt-48
-  h1.text.text-white.text-3xl.pb-10.mb-10.tracking-wide Spotify Login
-  p.text.text-white.tracking-wider.pt-10 Login To Spotify for Converting your Apple Playlist
-  button(@click="loggingToSpotify" class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-20 pt-2 pb-3 text-black rounded-full bg-white ")
-    span.tracking-widest.pr-7.pl-7.font-bold LOG IN
-  div(class="field")
-   h1.text-white.text-3xl.mt-10.mb-2.tracking-wide Playlist link
-   input(class="text-gray-700 font-bold mb-2 rounded-full w-72 h-7" type="text" v-model="plink" placeholder="Enter the apple playlist link here")
-  div(class="mt-5")
-   label.text-white.tracking-wider.pt-10 Make your playlist private
-   input(class="btn ml-2 h-4 w-4" type="checkbox" v-model="isprivate")
-  button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" v-on:click="change")
-   span.tracking-widest.pr-7.pl-7.font-bold CONVERT
-  div(v-if="this.started")
-   loader(:render="this.started" :text="this.message" :value="this.value")
+<template lang="pug">
+.stepper.mx-12.text-left
+  div.text-4xl.tracking-wider(v-bind:class = "(step === 1)?'text-white font-bold':'text-green-500 font-semibold'") Step-1
+  br
+  div(class="box bg-gray-300 bg-opacity-10 rounded-2xl" v-if="step == 1")
+    h1.text-white.text-3xl.pb-2 Spotify Login
+    p.text-white.tracking-wider.pt-2 Login To Spotify for Converting your Apple Playlist
+    button(@click="loggingToSpotify" class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-8 pt-2 pb-3 text-black rounded-full bg-white ")
+      span.tracking-widest.px-7.font-bold LOG IN
+    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-8 pt-2 pb-3 text-black rounded-full bg-white" @click="addStep")
+      span.tracking-widest.px-7 Next Step
+  br
+  div.text-4xl.tracking-wider(v-bind:class = "(step === 2)?'text-white font-bold':(step < 2)?'text-gray-600':'text-green-500 font-semibold'") Step-2
+  br
+  div(class="box bg-gray-300 bg-opacity-10 rounded-2xl" v-if="step == 2")
+    div(class="field")
+     h1.text-white.text-3xl.mt-10.mb-2.tracking-wide Playlist link
+     input(class="text-gray-700 font-bold mb-2 rounded-full w-72 h-7" type="text" v-model="plink" placeholder="Enter the apple playlist link here")
+    div(class="mt-5")
+     label.text-white.tracking-wider.pt-10 Make your playlist private
+     input(class="btn ml-2 h-4 w-4" type="checkbox" v-model="isprivate")
+    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" v-on:click="change")
+     span.tracking-widest.pr-7.pl-7.font-bold CONVERT
+    div(v-if="this.started")
+     loader(:render="this.started" :text="this.message" :value="this.value")
+  br
+  div.text-4xl.tracking-wider(v-bind:class = "(step === 3)?'text-white font-bold':(step < 3)?'text-gray-600':'text-green-500 font-semibold'") Step-3
+  br
+  div(class="box bg-gray-300 bg-opacity-10 rounded-2xl" v-if="step == 3")
+    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-8 pt-2 pb-3 text-black rounded-full bg-white" @click="addStep")
+      span.tracking-widest.px-7 Done
 </template>
 
 <script>
-import loader from "./loader"
-import axios from "axios"
-
+import loader from "./loader";
+import axios from "axios";
 export default {
-  components: {loader},
-  data(){
+  components: { loader },
+  data() {
     return {
-      step: 1,
       message: "",
       value: 0,
       started: false,
-      step: 1, 
+      step: 1,
       clientId: "SPOTIFY_CLIENT_ID",
       redirectUri: "http://localhost:8080/",
       spotifyScopes:
@@ -43,45 +56,45 @@ export default {
       playlistLength: 0,
       playlistCode: "",
       token: "appleToken",
-    }
+    };
   },
-  methods:{
+  methods: {
+    change() {
+      this.started = true;
+      this.message = "Extracting";
+      setTimeout(() => {
+        this.value += 30;
+        (this.message = "Creating Playlist"),
+          setTimeout(() => {
+            this.value += 30;
+            (this.message = "Adding Songs"),
+              setTimeout(() => {
+                this.value += 40;
+                (this.message = "Done"),
+                  setTimeout(() => {
+                    this.started = false;
+                    this.value = 0;
+                    this.step += 1;
+                  }, 2000);
+              }, 2000);
+          }, 2000);
+      }, 2000);
+    },
+
     addStep() {
       this.step += 1;
     },
-    
-    loggingToSpotify() { 
-      var url =`https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.sotifyScopes}&state=34fFs29kd09`;
-      window.location.href = url; 
+    loggingToSpotify() {
+      var url = `https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.sotifyScopes}&state=34fFs29kd09`;
+      window.location.href = url;
     },
-
-    change() {
-      this.started = true;
-      this.message = "Extracting"
-      setTimeout(() => {
-        this.value+=30
-        this.message = "Creating Playlist",
-        setTimeout(() => {
-          this.value+=30
-          this.message = "Adding Songs",
-          setTimeout(() => {
-            this.value+=40
-            this.message = "Done",
-            setTimeout(() => {
-              this.started = false;
-              this.value=0;
-            }, 2000)
-          }, 2000)
-        }, 2000)
-      }, 2000)
-    },
-    
     getPlaylistInfoFromApple(pLink) {
       this.playlistCode = pLink.split("/");
       this.playlistCode = this.playlistCode[this.playlistCode.length - 1];
       pLink =
         "https://cors.darpan.online/https://amp-api.music.apple.com/v1/catalog/in/playlists/" +
         this.playlistCode;
+
       axios({
         method: "get",
         url: pLink,
@@ -130,21 +143,25 @@ export default {
           }
         );
       }
-    }, 
+    },
   },
-}
+};
 </script>
 
 <style>
-.stepper{
-    height: 800px;
+.stepper {
+  height: 800px;
+}
+.box {
+  margin-left: 20px;
+  margin-right: 20px;
+  padding: 30px;
 }
 
-.field{
-  position:relative;
+.field {
+  position: relative;
 }
-.btn{
-  position:relative;
+.btn {
+  position: relative;
 }
-
 </style>
