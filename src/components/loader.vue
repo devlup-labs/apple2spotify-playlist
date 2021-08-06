@@ -36,6 +36,7 @@ export default {
     border-radius: 10px;
   }
   .backdrop {
+    padding-right: 100px;
     top: 0;
     position: fixed;
     background: rgba(0,0,0,0.5);
