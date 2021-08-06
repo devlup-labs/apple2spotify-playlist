@@ -8,7 +8,7 @@
     button(@click="loggingToSpotify" class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-8 pt-2 pb-3 text-black rounded-full bg-white ")
       span.tracking-widest.px-7.font-bold LOG IN
     button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-8 pt-2 pb-3 text-black rounded-full bg-white" @click="addStep")
-      span.tracking-widest.px-7 Next Step
+      span.tracking-widest.px-7.font-bold NEXT
   br
   div.text-4xl.tracking-wider(v-bind:class = "(step === 2)?'text-white font-bold':(step < 2)?'text-gray-600':'text-green-500 font-semibold'") Step-2
   br
@@ -21,8 +21,8 @@
      input(class="btn ml-2 h-4 w-4" type="checkbox" v-model="isprivate")
     button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" v-on:click="change")
      span.tracking-widest.pr-7.pl-7.font-bold CONVERT
-    div(v-if="this.started")
-     loader(:render="this.started" :text="this.message" :value="this.value")
+  div(v-if="this.started")
+    loader(:render="this.started" :text="this.message" :value="this.value")
   br
   div.text-4xl.tracking-wider(v-bind:class = "(step === 3)?'text-white font-bold':(step < 3)?'text-gray-600':'text-green-500 font-semibold'") Step-3
   br
