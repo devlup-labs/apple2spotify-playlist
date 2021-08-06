@@ -15,7 +15,7 @@
   div(class="box bg-gray-300 bg-opacity-10 rounded-2xl" v-if="step == 2")
     div(class="field")
      h1.text-white.text-3xl.mt-10.mb-2.tracking-wide Playlist link
-     input(class="text-gray-700 font-bold mb-2 rounded-full w-72 h-7" type="text" v-model="plink" placeholder="Enter the apple playlist link here")
+     input(class="text-gray-700 font-bold mb-2 rounded-full w-72 h-7" type="text" v-model="plink" placeholder="  Enter the apple playlist link here")
     div(class="mt-5")
      label.text-white.tracking-wider.pt-10 Make your playlist private
      input(class="btn ml-2 h-4 w-4" type="checkbox" v-model="isprivate")
