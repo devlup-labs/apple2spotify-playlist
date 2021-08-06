@@ -18,6 +18,7 @@
 
 <script>
 import loader from "./loader"
+import axios from "axios"
 
 export default {
   components: {loader},
