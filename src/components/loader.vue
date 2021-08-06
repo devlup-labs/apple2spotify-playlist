@@ -1,15 +1,18 @@
 <template>
   <div class="backdrop">
     <center>
-    <div class="modal" v-if="render">
-      <div class="loader">
-        <bar :value="value" />
-        <center>
-          <div class="status">
-          <h1>{{ text }}</h1></div>
-        </center></div>
-      </div></center>
-    </div>
+      <div class="modal" v-if="render">
+        <div class="loader">
+          <bar :value="value" />
+          <center>
+            <div class="status">
+              <h1>{{ text }}</h1>
+            </div>
+          </center>
+        </div>
+      </div>
+    </center>
+  </div>
 </template>
 
 <script>
