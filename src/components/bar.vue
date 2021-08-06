@@ -1,13 +1,14 @@
 <template>
-	<div class="container">
-		<div class="loading-bar">
-    <div class="percentage" v-bind:style="{width: percentage + '%' }">
-	</div></div></div>
+  <div class="container">
+    <div class="loading-bar">
+      <div class="percentage" v-bind:style="{ width: percentage + '%' }"></div>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
-	props: ["value"],
+  props: ["value"],
   name: "bar",
   data: () => {
     return {
