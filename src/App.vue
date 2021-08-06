@@ -15,7 +15,7 @@ import Home from "./components/home.vue";
 import Stepper from "./components/stepper.vue";
 import options from "./particles.json";
 export default {
-  name: 'App',
+  name: "App",
   components: { Home, Stepper },
   data() {
     return {
@@ -78,7 +78,12 @@ export default {
       let urlParams = new URLSearchParams(location.search);
       if (urlParams.get("code")) {
         this.code = urlParams.get("code");
-        const url = [location.protocol, '//', location.host, location.pathname].join('');
+        const url = [
+          location.protocol,
+          "//",
+          location.host,
+          location.pathname,
+        ].join("");
         window.history.pushState({}, "", url);
       }
       if (this.code !== null) {
