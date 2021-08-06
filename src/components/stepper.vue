@@ -34,6 +34,7 @@
 <script>
 import loader from "./loader";
 import axios from "axios";
+
 export default {
   components: { loader },
   data() {
@@ -59,6 +60,7 @@ export default {
     };
   },
   methods: {
+  
     change() {
       this.started = true;
       this.message = "Extracting";
@@ -152,7 +154,8 @@ export default {
 .stepper {
   height: 800px;
 }
-.box {
+
+.box{
   margin-left: 20px;
   margin-right: 20px;
   padding: 30px;
