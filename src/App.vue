@@ -5,29 +5,54 @@
       h1.tracking-in-contract-bck Playlistify
     Home(@clicked="goto('stepper')")
     .my-80(ref="stepper")
-      Stepper
+      Stepper(:step = "step")
   Particles#tsparticles(:options="options")
 </template>
 
 <script>
+//- import axios from "axios";
 import Home from "./components/home.vue";
 import Stepper from "./components/stepper.vue";
 import options from "./particles.json";
-
 export default {
-  name: "App",
+  name: 'App',
   components: { Home, Stepper },
   data() {
     return {
+      code: null,
       options: options,
+      step: 1,
     };
   },
   methods: {
     goto(refName) {
       var element = this.$refs[refName];
       var top = element.offsetTop;
-      window.scroll({ left: 0, top, behavior: "smooth" });
+      if(this.step == 1){
+        window.scroll({ left: 0, top, behavior: "smooth" });
+      }
+      else{
+        window.scroll({ left: 0, top});
+      }
+      
     },
+    updateStep() {
+      let urlParams = new URLSearchParams(location.search);
+      if (urlParams.get("code")) {
+        this.code = urlParams.get("code");
+        const url = [location.protocol, '//', location.host, location.pathname].join('');
+        window.history.pushState({}, "", url);
+      }
+      if (this.code !== null) {
+        this.step += 1;
+      }
+    }
+  },
+  mounted() {
+    this.updateStep();
+    if(this.step == 2){
+      this.goto('stepper');
+    }
   },
 };
 </script>
