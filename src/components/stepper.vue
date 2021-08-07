@@ -32,7 +32,31 @@ export default {
     loggingToSpotify() { 
       var url =`https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.sotifyScopes}&state=34fFs29kd09`;
       window.location.href = url; 
-      }
+      },
+    async createEmptyPlaylist(Name, userId, token) {
+  let playlistId = "";
+  let url = "https://api.spotify.com/v1/users/"+userId+"/playlists"
+  console.log(url)
+  var data = {
+  name: String(Name),
+  public: false
+}
+
+  var headers = {
+    'Content-Type': 'application/json',
+    'Authorization': "Bearer  "+ String(token)
+  }
+
+  await axios.post(
+    url= url,
+    // "https://api.spotify.com/v1/users/"+String(userId)+"/playlists",
+    JSON.stringify(data),
+    {headers})
+    .then(res => {playlistId = String(res.data.uri)
+    console.log("playid:", playlistId)})
+    .catch(err => err)
+  return playlistId.split(":")[2];
+}
   }
 }
 </script>
