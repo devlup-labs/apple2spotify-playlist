@@ -22,31 +22,28 @@
     button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" v-on:click="change")
      span.tracking-widest.pr-7.pl-7.font-bold CONVERT
   div(v-if="this.started")
-    loader(:render="this.started" :text="this.message" :value="this.value")
+    loader(:render="this.started" :text="this.message")
   br
   div.text-4xl.tracking-wider(v-bind:class = "(step === 3)?'text-white font-bold':(step < 3)?'text-gray-600':'text-green-500 font-semibold'") Step-3
   br
   div(class="box bg-gray-300 bg-opacity-10 rounded-2xl" v-if="step == 3")
     button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-8 pt-2 pb-3 text-black rounded-full bg-white" @click="addStep")
-      span.tracking-widest.px-7 Done
+      span.tracking-widest.px-7.font-bold DONE
 </template>
 
 <script>
 import loader from "./loader";
 import axios from "axios";
-
 export default {
   components: { loader },
   data() {
     return {
       message: "",
-      value: 0,
       started: false,
       step: 1,
       clientId: "SPOTIFY_CLIENT_ID",
       redirectUri: "http://localhost:8080/",
-      spotifyScopes:
-        "user-read-email playlist-modify-public playlist-modify-private",
+      spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private",
       pLink: "",
       isprivate: false,
       playlist: {
@@ -60,26 +57,24 @@ export default {
     };
   },
   methods: {
-  
     change() {
       this.started = true;
-      this.message = "Extracting";
+      this.message = "Extracting songs";
       setTimeout(() => {
-        this.value += 30;
-        (this.message = "Creating Playlist"),
+        this.message = "Searching songs";
+        setTimeout(() => {
+          this.message = "Creating playlist";
           setTimeout(() => {
-            this.value += 30;
-            (this.message = "Adding Songs"),
+            this.message = "Adding songs";
+            setTimeout(() => {
+              this.message = "Done";
               setTimeout(() => {
-                this.value += 40;
-                (this.message = "Done"),
-                  setTimeout(() => {
-                    this.started = false;
-                    this.value = 0;
-                    this.step += 1;
-                  }, 2000);
+                this.started = false;
+                this.step += 1;
               }, 2000);
+            }, 2000);
           }, 2000);
+        }, 2000);
       }, 2000);
     },
 
@@ -96,7 +91,6 @@ export default {
       pLink =
         "https://cors.darpan.online/https://amp-api.music.apple.com/v1/catalog/in/playlists/" +
         this.playlistCode;
-
       axios({
         method: "get",
         url: pLink,
@@ -154,13 +148,11 @@ export default {
 .stepper {
   height: 800px;
 }
-
-.box{
+.box {
   margin-left: 20px;
   margin-right: 20px;
   padding: 30px;
 }
-
 .field {
   position: relative;
 }
