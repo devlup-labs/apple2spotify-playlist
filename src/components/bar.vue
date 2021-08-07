@@ -16,9 +16,9 @@ export default {
   },
 
   created() {
-    var intval = setInterval(() => {
+    var interval = setInterval(() => {
       if (this.percentage <= 100) this.percentage += 0.1;
-      else clearInterval(intval);
+      else clearInterval(interval);
     }, 8);
   },
 };

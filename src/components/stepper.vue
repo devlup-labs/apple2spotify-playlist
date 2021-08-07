@@ -19,7 +19,7 @@
     div(class="mt-5")
      label.text-white.tracking-wider.pt-10 Make your playlist private
      input(class="btn ml-2 h-4 w-4" type="checkbox" v-model="isprivate")
-    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" v-on:click="change")
+    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" v-on:click="changeMessage")
      span.tracking-widest.pr-7.pl-7.font-bold CONVERT
   div(v-if="this.started")
     loader(:render="this.started" :text="this.message")
@@ -57,7 +57,7 @@ export default {
     };
   },
   methods: {
-    change() {
+    changeMessage() {
       this.started = true;
       this.message = "Extracting songs";
       setTimeout(() => {
