@@ -56,7 +56,7 @@ export default {
       this.step += 1;
     },
     loggingToSpotify() {
-      var url = `https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.sotifyScopes}&state=34fFs29kd09`;
+      var url = `https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.spotifyScopes}&state=34fFs29kd09`;
       window.location.href = url;
     },
     getPlaylistInfoFromApple(pLink) {
