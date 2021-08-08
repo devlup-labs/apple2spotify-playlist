@@ -10,10 +10,10 @@
 </template>
 
 <script>
+import axios from "axios";
 import Home from "./components/home.vue";
 import Stepper from "./components/stepper.vue";
 import options from "./particles.json";
-
 export default {
   name: "App",
   components: { Home, Stepper },
@@ -21,7 +21,12 @@ export default {
     return {
       step: 1,
       code: null,
-      options: options,
+      token: null,
+      userId: null,
+      headers: {
+            'Content-type':'application/x-www-form-urlencoded'  
+      },
+      options: options
     };
   },
   methods: {
@@ -29,6 +34,45 @@ export default {
       var element = this.$refs[refName];
       var top = element.offsetTop;
       window.scroll({ left: 0, top, behavior: "smooth" });
+    },
+    validateCode() {
+
+      var data =  new URLSearchParams ({
+            grant_type:"authorization_code",
+            code:this.code,
+            redirect_uri:"http://localhost:8080/",
+            client_id:"SPOTIFY_CLIENT_ID",
+            client_secret:"SPOTIFY_CLIENT_SECRET"
+      });
+
+      data = data.toString();
+      var headers = this.headers;
+      var URL= 'https://cors.darpan.online/https://accounts.spotify.com/api/token';
+      axios({
+        method:'post',
+        url:URL,
+        data,
+        headers:headers
+      }).then(res =>{
+        this.token = res.data.access_token;
+        var header = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${this.token}`    
+        };
+        axios({
+          method:'get',
+          url:'https://api.spotify.com/v1/me',
+          headers:header
+        }).then(res =>{
+            this.userId = res.data.id;
+            console.log(res.data);
+        }).catch(err =>{
+            console.error(err);
+        })   
+        }).catch(err =>{
+            console.error(err);
+        })
     },
     updateStep() {
       let urlParams = new URLSearchParams(location.search);
@@ -44,10 +88,11 @@ export default {
       }
       if (this.code !== null) {
         this.step = 2;
+        this.validateCode();
       }
-    },
-  },
-  mounted() {
+    }
+   },
+    mounted() {
     this.updateStep();
   },
 };
