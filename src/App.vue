@@ -5,23 +5,28 @@
       h1.tracking-in-contract-bck Playlistify
     Home(@clicked="goto('stepper')")
     .my-80(ref="stepper")
+      div.bg-green-600.rounded-2xl.h-10.w-48.mx-auto(v-show="display" v-bind:class = "(delay === true)?'bounce-in-top':'bounce-out-top'")
+        img.py-2.ml-3(src="../public/profile-tick.svg", alt="tick-mark", style="position: absolute")
+        h1.text-white.ml-4.py-2.font-bold Login Successful
       Stepper(:step = "step")
   Particles#tsparticles(:options="options")
 </template>
 
 <script>
-//- import axios from "axios";
 import Home from "./components/home.vue";
 import Stepper from "./components/stepper.vue";
 import options from "./particles.json";
-export default {
-  name: 'App',
+
+export default{
+  name: "App",
   components: { Home, Stepper },
   data() {
     return {
       code: null,
       options: options,
       step: 1,
+      display: false,
+      delay: true
     };
   },
   methods: {
@@ -33,14 +38,27 @@ export default {
       }
       else{
         window.scroll({ left: 0, top});
-      }
-      
+      } 
+    },
+    notify(){
+      this.display = true;
+      setTimeout(() => {
+        this.display = false;
+      }, 4000)
+      setTimeout(() => {
+        this.delay = false;
+      }, 1000)
     },
     updateStep() {
       let urlParams = new URLSearchParams(location.search);
       if (urlParams.get("code")) {
         this.code = urlParams.get("code");
-        const url = [location.protocol, '//', location.host, location.pathname].join('');
+        const url = [
+          location.protocol,
+          "//",
+          location.host,
+          location.pathname,
+        ].join("");
         window.history.pushState({}, "", url);
       }
       if (this.code !== null) {
@@ -52,12 +70,21 @@ export default {
     this.updateStep();
     if(this.step == 2){
       this.goto('stepper');
+      this.notify();
     }
   },
 };
 </script>
 
 <style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
 nav {
   font-family: "Noto Sans JP", sans-serif;
 }
@@ -81,6 +108,118 @@ nav {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     opacity: 1;
+  }
+}
+.bounce-in-top {
+	-webkit-animation: bounce-in-top 1s both;
+  animation: bounce-in-top 1s both;
+}
+@-webkit-keyframes bounce-in-top {
+  0% {
+    -webkit-transform: translateY(-500px);
+            transform: translateY(-500px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+    opacity: 0;
+  }
+  38% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+    opacity: 1;
+  }
+  55% {
+    -webkit-transform: translateY(-65px);
+            transform: translateY(-65px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  72% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  81% {
+    -webkit-transform: translateY(-28px);
+            transform: translateY(-28px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  90% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  95% {
+    -webkit-transform: translateY(-8px);
+            transform: translateY(-8px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  100% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+}
+.bounce-out-top {
+	-webkit-animation: bounce-out-top 1s 2s both;
+  animation: bounce-out-top 1s 2s both;
+}
+@-webkit-keyframes bounce-out-top {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  5% {
+    -webkit-transform: translateY(-30px);
+            transform: translateY(-30px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  15% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  25% {
+    -webkit-transform: translateY(-38px);
+            transform: translateY(-38px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  38% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  52% {
+    -webkit-transform: translateY(-75px);
+            transform: translateY(-75px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  70% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: translateY(-800px);
+            transform: translateY(-800px);
+    opacity: 0;
   }
 }
 .tsparticles {
