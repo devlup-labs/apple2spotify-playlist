@@ -32,8 +32,9 @@
 </template>
 
 <script>
-import loader from "./loader";
 import axios from "axios";
+import loader from "./loader";
+
 export default {
   components: { loader },
   data() {
@@ -43,7 +44,8 @@ export default {
       step: 1,
       clientId: "SPOTIFY_CLIENT_ID",
       redirectUri: "http://localhost:8080/",
-      spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private",
+      spotifyScopes:
+        "user-read-email playlist-modify-public playlist-modify-private",
       pLink: "",
       isprivate: false,
       playlist: {
@@ -82,7 +84,7 @@ export default {
       this.step += 1;
     },
     loggingToSpotify() {
-      var url = `https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.sotifyScopes}&state=34fFs29kd09`;
+      var url = `https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.spotifyScopes}&state=34fFs29kd09`;
       window.location.href = url;
     },
     getPlaylistInfoFromApple(pLink) {
