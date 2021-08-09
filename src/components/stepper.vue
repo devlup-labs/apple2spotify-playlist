@@ -166,7 +166,7 @@ export default {
             let items = res.data.tracks.items;
             let i = 0
             while( items.length>i) {
-              if (items[i].artists[0].name.toUpperCase() ===song.artist.toUpperCase() && items[i].name.toUpperCase() === song.songname.toUpperCase()) {
+              if (items[i].artists[0].name.toUpperCase() === song.artist.toUpperCase() && items[i].name.toUpperCase() === song.songname.toUpperCase()) {
                 this.songsUri.push(items[i].uri);
                 break;
               }
@@ -175,8 +175,8 @@ export default {
             if(items.length==i ){
               this.songsNotFound.push(song.songname)
             }
-          }).
-          catch((err)=>{
+          })
+          .catch((err)=>{
             console.log(err)
           });
       });
