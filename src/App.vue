@@ -90,7 +90,7 @@ export default {
         this.step = 2;
         this.validateCode();
       }
-    }
+    },
    },
     mounted() {
     this.updateStep();
