@@ -13,31 +13,37 @@
   div(class="box bg-gray-300 bg-opacity-10 rounded-2xl" v-if="step == 2")
     div(class="btn")
      h1.text-white.text-3xl.my-2.tracking-wide.font-bold Playlist link
-     input(class="text-gray-700 mb-2 rounded-sm px-4 h-7" type="text" v-model="plink" placeholder="Enter the apple playlist link here")
+     input(class="text-gray-700 mb-2 rounded-sm px-4 h-7" type="text" v-model="pLink" placeholder="Enter the apple playlist link here")
     div(class="mt-5")
      input(class="btn mr-2 h-4 w-4" type="checkbox" v-model="isprivate")
      label.text-white.tracking-wider.pt-8 Make your playlist private
-    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" @click="addStep")
+    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" @click="changeMessage")
      span.tracking-widest.pr-7.pl-7.font-bold CONVERT
+  div(v-if="this.started")
+    loader(:render="this.started" :text="this.message")
   br
   div.text-4xl.tracking-wider(v-bind:class = "(step === 3)?'text-white font-bold':(step < 3)?'text-gray-600':'text-green-500 font-semibold'") Step-3
   br
   div(class="box bg-gray-300 bg-opacity-10 rounded-2xl" v-if="step == 3")
-    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-8 pt-2 pb-3 text-black rounded-full bg-white" @click="addStep")
-      span.tracking-widest.px-7 Done
+    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-8 pt-2 pb-3 text-black rounded-full bg-white")
+      span.tracking-widest.px-7.font-bold DONE
 </template>
 
 <script>
 import axios from "axios";
+import loader from "./loader";
 export default {
   props: ['step'],
-  data(){
+  components: { loader },
+  data() {
     return {
-      clientId: "3cd6a99b035349569a18c90f8e7aea07",
-      redirectUri: "http://localhost:8080/", 
+      message: "",
+      started: false,
+      clientId: "SPOTIFY_CLIENT_ID",
+      redirectUri: "http://localhost:8080/",
       spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private",
-      plink:'',
-      isprivate : false,
+      pLink: "",
+      isprivate: false,
       playlist: {
         name: "",
         length: null,
@@ -49,6 +55,27 @@ export default {
     };
   },
   methods: {
+    changeMessage() {
+      this.started = true;
+      this.message = "Extracting songs";
+      setTimeout(() => {
+        this.message = "Searching songs";
+        setTimeout(() => {
+          this.message = "Creating playlist";
+          setTimeout(() => {
+            this.message = "Adding songs";
+            setTimeout(() => {
+              this.message = "Done";
+              setTimeout(() => {
+                this.started = false;
+                this.$emit('addStep', this.step);
+              }, 2000);
+            }, 2000);
+          }, 2000);
+        }, 2000);
+      }, 2000);
+    },
+
     loggingToSpotify() {
       var url = `https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.spotifyScopes}&state=34fFs29kd09`;
       window.location.href = url;
@@ -59,7 +86,6 @@ export default {
       pLink =
         "https://cors.darpan.online/https://amp-api.music.apple.com/v1/catalog/in/playlists/" +
         this.playlistCode;
-
       axios({
         method: "get",
         url: pLink,
@@ -117,7 +143,7 @@ export default {
 .stepper {
   height: 550px;
 }
-.box{
+.box {
   margin-left: 20px;
   margin-right: 20px;
   padding: 30px;

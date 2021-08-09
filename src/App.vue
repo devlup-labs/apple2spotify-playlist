@@ -8,16 +8,16 @@
       div.bg-green-600.rounded-2xl.h-10.w-48.mx-auto(v-show="display" v-bind:class = "(delay === true)?'bounce-in-top':'bounce-out-top'")
         img.py-2.ml-3(src="../public/profile-tick.svg", alt="tick-mark", style="position: absolute")
         h1.text-white.ml-4.py-2.font-bold Login Successful
-      Stepper(:step = "step")
+      Stepper(:step = "step" @addStep="addStep")
   Particles#tsparticles(:options="options")
 </template>
 
 <script>
+import axios from "axios";
 import Home from "./components/home.vue";
 import Stepper from "./components/stepper.vue";
 import options from "./particles.json";
-
-export default{
+export default {
   name: "App",
   components: { Home, Stepper },
   data() {
@@ -26,7 +26,12 @@ export default{
       options: options,
       step: 1,
       display: false,
-      delay: true
+      delay: true,
+      token: null,
+      userId: null,
+      headers: {
+        'Content-type':'application/x-www-form-urlencoded'
+      }
     };
   },
   methods: {
@@ -40,6 +45,9 @@ export default{
         window.scroll({ left: 0, top});
       } 
     },
+    addStep() {
+      this.step += 1;
+    },
     notify(){
       this.display = true;
       setTimeout(() => {
@@ -48,6 +56,45 @@ export default{
       setTimeout(() => {
         this.delay = false;
       }, 1000)
+    },
+    validateCode() {
+
+      var data =  new URLSearchParams ({
+            grant_type:"authorization_code",
+            code:this.code,
+            redirect_uri:"http://localhost:8080/",
+            client_id:"SPOTIFY_CLIENT_ID",
+            client_secret:"SPOTIFY_CLIENT_SECRET"
+      });
+
+      data = data.toString();
+      var headers = this.headers;
+      var URL= 'https://cors.darpan.online/https://accounts.spotify.com/api/token';
+      axios({
+        method:'post',
+        url:URL,
+        data,
+        headers:headers
+      }).then(res =>{
+        this.token = res.data.access_token;
+        var header = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${this.token}`    
+        };
+        axios({
+          method:'get',
+          url:'https://api.spotify.com/v1/me',
+          headers:header
+        }).then(res =>{
+            this.userId = res.data.id;
+            console.log(res.data);
+        }).catch(err =>{
+            console.error(err);
+        })   
+        }).catch(err =>{
+            console.error(err);
+        })
     },
     updateStep() {
       let urlParams = new URLSearchParams(location.search);
@@ -63,6 +110,7 @@ export default{
       }
       if (this.code !== null) {
         this.step += 1;
+        this.validateCode();
       }
     }
   },
