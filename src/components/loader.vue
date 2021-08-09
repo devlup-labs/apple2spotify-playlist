@@ -1,17 +1,13 @@
 <template>
   <div class="backdrop">
-    <center>
-      <div class="modal" v-if="render">
-        <div class="loader">
-          <bar />
-          <center>
-            <div class="status">
-              <h1>{{ text }}</h1>
-            </div>
-          </center>
-        </div>
+    <div class="modal flex justify-center" v-if="render">
+      <div class="loader">
+        <bar />
+          <div class="status text-center">
+            <h1>{{ text }}</h1>
+          </div>
       </div>
-    </center>
+    </div>
   </div>
 </template>
 

@@ -17,9 +17,9 @@ export default {
 
   created() {
     var interval = setInterval(() => {
-      if (this.percentage <= 100) this.percentage += 0.2;
+      if (this.percentage <= 100) this.percentage += 0.1;
       else clearInterval(interval);
-    }, 8);
+    }, 7);
   },
 };
 </script>
@@ -32,8 +32,6 @@ export default {
   border-radius: 15px;
   overflow: hidden;
   border: 1px solid grey;
-  box-shadow: inset 0 1px 2px rgba($color: #000, $alpha: 0.4), 0 -1px 1px #fff,
-    0 1px 0 #fff;
 }
 
 .percentage {
@@ -46,17 +44,6 @@ export default {
   border-radius: 15px;
   background-color: #a5df41;
   background-size: 30px 30px;
-  background-image: linear-gradient(
-    135deg,
-    rgba($color: #fff, $alpha: 0.15) 25%,
-    transparent 25%,
-    transparent 50%,
-    rgba($color: #fff, $alpha: 0.15) 50%,
-    rgba($color: #fff, $alpha: 0.15) 75%,
-    transparent 75%,
-    transparent
-  );
-  animation: animate-stripes 3s linear infinite;
 }
 
 @keyframes animate-stripes {
