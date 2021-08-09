@@ -112,15 +112,9 @@ export default {
         this.step += 1;
         this.validateCode();
       }
-<<<<<<< HEAD
-    },
-   },
-    mounted() {
-=======
     }
   },
   mounted() {
->>>>>>> 0fa2cd5896859661e9e696000116d9567939295c
     this.updateStep();
     if(this.step == 2){
       this.goto('stepper');
