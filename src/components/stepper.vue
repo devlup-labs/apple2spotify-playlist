@@ -7,12 +7,11 @@
     p.text-white.tracking-wider.pt-2 Login To Spotify for Converting your Apple Playlist
     button(@click="loggingToSpotify" class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-8 pt-2 pb-3 text-black rounded-full bg-white ")
       span.tracking-widest.px-7.font-bold LOG IN
-    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-8 pt-2 pb-3 text-black rounded-full bg-white" @click="addStep")
-      span.tracking-widest.px-7.font-bold NEXT
   br
   div.text-4xl.tracking-wider(v-bind:class = "(step === 2)?'text-white font-bold':(step < 2)?'text-gray-600':'text-green-500 font-semibold'") Step-2
   br
   div(class="box bg-gray-300 bg-opacity-10 rounded-2xl" v-if="step == 2")
+<<<<<<< HEAD
     div(class="field")
      h1.text-white.text-3xl.mt-10.mb-2.tracking-wide Playlist link
      input(class="text-gray-700 font-bold mb-2 rounded-full w-72 h-7" type="text" v-model="pLink" placeholder="  Enter the apple playlist link here")
@@ -20,6 +19,15 @@
      label.text-white.tracking-wider.pt-10 Make your playlist private
      input(class="btn ml-2 h-4 w-4" type="checkbox" v-model="isprivate")
     button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" @click="getPlaylistInfoFromApple")
+=======
+    div(class="btn")
+     h1.text-white.text-3xl.my-2.tracking-wide.font-bold Playlist link
+     input(class="text-gray-700 mb-2 rounded-sm px-4 h-7" type="text" v-model="pLink" placeholder="Enter the apple playlist link here")
+    div(class="mt-5")
+     input(class="btn mr-2 h-4 w-4" type="checkbox" v-model="isprivate")
+     label.text-white.tracking-wider.pt-8 Make your playlist private
+    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" @click="changeMessage")
+>>>>>>> 0fa2cd5896859661e9e696000116d9567939295c
      span.tracking-widest.pr-7.pl-7.font-bold CONVERT
   div(v-if="this.started")
     loader(:render="this.started" :text="this.message")
@@ -27,27 +35,38 @@
   div.text-4xl.tracking-wider(v-bind:class = "(step === 3)?'text-white font-bold':(step < 3)?'text-gray-600':'text-green-500 font-semibold'") Step-3
   br
   div(class="box bg-gray-300 bg-opacity-10 rounded-2xl" v-if="step == 3")
-    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-8 pt-2 pb-3 text-black rounded-full bg-white" @click="addStep")
+    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-8 pt-2 pb-3 text-black rounded-full bg-white")
       span.tracking-widest.px-7.font-bold DONE
 </template>
 
 <script>
 import axios from "axios";
 import loader from "./loader";
+<<<<<<< HEAD
 /* import App from "./src/App.vue"; */
 
+=======
+>>>>>>> 0fa2cd5896859661e9e696000116d9567939295c
 export default {
+  props: ['step'],
   components: { loader },
   data() {
     return {
       message: "",
       started: false,
+<<<<<<< HEAD
       step: 1,
       clientId: "f167aedf9d4d470d8fda32c3e2a813db",
       redirectUri: "http://localhost:8080/",
       spotifyScopes:
         "user-read-email playlist-modify-public playlist-modify-private",
       pLink: '',
+=======
+      clientId: "SPOTIFY_CLIENT_ID",
+      redirectUri: "http://localhost:8080/",
+      spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private",
+      pLink: "",
+>>>>>>> 0fa2cd5896859661e9e696000116d9567939295c
       isprivate: false,
       playlist: {
         name: "",
@@ -73,7 +92,7 @@ export default {
               this.message = "Done";
               setTimeout(() => {
                 this.started = false;
-                this.step += 1;
+                this.$emit('addStep', this.step);
               }, 2000);
             }, 2000);
           }, 2000);
@@ -81,9 +100,6 @@ export default {
       }, 2000);
     },
 
-    addStep() {
-      this.step += 1;
-    },
     loggingToSpotify() {
       var url = `https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.spotifyScopes}&state=34fFs29kd09`;
       window.location.href = url;
@@ -173,15 +189,12 @@ export default {
 
 <style>
 .stepper {
-  height: 800px;
+  height: 550px;
 }
 .box {
   margin-left: 20px;
   margin-right: 20px;
   padding: 30px;
-}
-.field {
-  position: relative;
 }
 .btn {
   position: relative;

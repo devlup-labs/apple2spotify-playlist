@@ -5,7 +5,10 @@
       h1.tracking-in-contract-bck Playlistify
     Home(@clicked="goto('stepper')")
     .my-80(ref="stepper")
-      Stepper
+      div.bg-green-600.rounded-2xl.h-10.w-48.mx-auto(v-show="display" v-bind:class = "(delay === true)?'bounce-in-top':'bounce-out-top'")
+        img.py-2.ml-3(src="../public/profile-tick.svg", alt="tick-mark", style="position: absolute")
+        h1.text-white.ml-4.py-2.font-bold Login Successful
+      Stepper(:step = "step" @addStep="addStep")
   Particles#tsparticles(:options="options")
 </template>
 
@@ -19,21 +22,40 @@ export default {
   components: { Home, Stepper },
   data() {
     return {
-      step: 1,
       code: null,
+      options: options,
+      step: 1,
+      display: false,
+      delay: true,
       token: null,
       userId: null,
       headers: {
-            'Content-type':'application/x-www-form-urlencoded'  
-      },
-      options: options
+        'Content-type':'application/x-www-form-urlencoded'
+      }
     };
   },
   methods: {
     goto(refName) {
       var element = this.$refs[refName];
       var top = element.offsetTop;
-      window.scroll({ left: 0, top, behavior: "smooth" });
+      if(this.step == 1){
+        window.scroll({ left: 0, top, behavior: "smooth" });
+      }
+      else{
+        window.scroll({ left: 0, top});
+      } 
+    },
+    addStep() {
+      this.step += 1;
+    },
+    notify(){
+      this.display = true;
+      setTimeout(() => {
+        this.display = false;
+      }, 4000)
+      setTimeout(() => {
+        this.delay = false;
+      }, 1000)
     },
     validateCode() {
 
@@ -87,13 +109,23 @@ export default {
         window.history.pushState({}, "", url);
       }
       if (this.code !== null) {
-        this.step = 2;
+        this.step += 1;
         this.validateCode();
       }
+<<<<<<< HEAD
     },
    },
     mounted() {
+=======
+    }
+  },
+  mounted() {
+>>>>>>> 0fa2cd5896859661e9e696000116d9567939295c
     this.updateStep();
+    if(this.step == 2){
+      this.goto('stepper');
+      this.notify();
+    }
   },
 };
 </script>
@@ -130,6 +162,118 @@ nav {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     opacity: 1;
+  }
+}
+.bounce-in-top {
+	-webkit-animation: bounce-in-top 1s both;
+  animation: bounce-in-top 1s both;
+}
+@-webkit-keyframes bounce-in-top {
+  0% {
+    -webkit-transform: translateY(-500px);
+            transform: translateY(-500px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+    opacity: 0;
+  }
+  38% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+    opacity: 1;
+  }
+  55% {
+    -webkit-transform: translateY(-65px);
+            transform: translateY(-65px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  72% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  81% {
+    -webkit-transform: translateY(-28px);
+            transform: translateY(-28px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  90% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  95% {
+    -webkit-transform: translateY(-8px);
+            transform: translateY(-8px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  100% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+}
+.bounce-out-top {
+	-webkit-animation: bounce-out-top 1s 2s both;
+  animation: bounce-out-top 1s 2s both;
+}
+@-webkit-keyframes bounce-out-top {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  5% {
+    -webkit-transform: translateY(-30px);
+            transform: translateY(-30px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  15% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  25% {
+    -webkit-transform: translateY(-38px);
+            transform: translateY(-38px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  38% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  52% {
+    -webkit-transform: translateY(-75px);
+            transform: translateY(-75px);
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+  }
+  70% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+            animation-timing-function: ease-out;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: translateY(-800px);
+            transform: translateY(-800px);
+    opacity: 0;
   }
 }
 .tsparticles {
