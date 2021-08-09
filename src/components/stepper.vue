@@ -15,11 +15,11 @@
   div(class="box bg-gray-300 bg-opacity-10 rounded-2xl" v-if="step == 2")
     div(class="field")
      h1.text-white.text-3xl.mt-10.mb-2.tracking-wide Playlist link
-     input(class="text-gray-700 font-bold mb-2 rounded-full w-72 h-7" type="text" v-model="plink" placeholder="Enter the apple playlist link here")
+     input(class="text-gray-700 font-bold mb-2 rounded-full w-72 h-7" type="text" v-model="pLink" placeholder="Enter the apple playlist link here")
     div(class="mt-5")
      label.text-white.tracking-wider.pt-10 Make your playlist private
      input(class="btn ml-2 h-4 w-4" type="checkbox" v-model="isprivate")
-    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" @click="addStep")
+    button(class="button transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" @click="getPlaylistInfoFromApple(this.pLink)")
      span.tracking-widest.pr-7.pl-7.font-bold CONVERT
   br
   div.text-4xl.tracking-wider(v-bind:class = "(step === 3)?'text-white font-bold':(step < 3)?'text-gray-600':'text-green-500 font-semibold'") Step-3
@@ -32,6 +32,9 @@
 <script>
 import axios from "axios";
 export default {
+  props:[
+    'spotifyToken'
+  ],
   data() {
     return {
       step: 1, 
@@ -46,6 +49,8 @@ export default {
         length: null,
         songs: [],
       },
+      songsUri:[],
+      songsNotFound:[],
       playlistLength: 0,
       playlistCode: "",
       token: "appleToken",
@@ -114,7 +119,41 @@ export default {
           }
         );
       }
+      this.searchingSongsInSpotify()
     },
+    searchingSongsInSpotify() {
+      this.songsUri.length=0
+      this.songsNotFound.length=0
+      this.playlist["songs"].map((song) => {
+        axios
+          .get("https://api.spotify.com/v1/search", {
+            headers: {
+              Authorization: "Bearer " + this.spotifyToken,
+            },
+            params: {
+              q: "track:"+song.songname+" artist:"+song.artist,
+              type: "track",
+            },
+          })
+          .then((res) => {
+            let items = res.data.tracks.items;
+            let i = 0
+            while( items.length>i) {
+              if (items[i].artists[0].name.toUpperCase() ===song.artist.toUpperCase() && items[i].name.toUpperCase() === song.songname.toUpperCase()) {
+                this.songsUri.push(items[i].uri);
+                break;
+              }
+              i++
+            }
+            if(items.length==i ){
+              this.songsNotFound.push(song.songname)
+            }
+          }).
+          catch((err)=>{
+            console.log(err)
+          });
+      });
+    }
   },
 };
 </script>

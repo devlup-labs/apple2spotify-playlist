@@ -5,7 +5,7 @@
       h1.tracking-in-contract-bck Playlistify
     Home(@clicked="goto('stepper')")
     .my-80(ref="stepper")
-      Stepper
+      Stepper(:spotifyToken="token")
   Particles#tsparticles(:options="options")
 </template>
 
