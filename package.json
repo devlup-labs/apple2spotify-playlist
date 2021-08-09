@@ -8,14 +8,18 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "autoprefixer": "^9.8.6",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "json": "^11.0.0",
     "particles.vue3": "^1.14.2",
+    "postcss": "^7.0.36",
     "pug": "^3.0.2",
     "pug-linker": "^4.0.0",
     "pug-load": "^3.0.0",
     "pug-parser": "^6.0.0",
     "pug-plain-loader": "^1.1.0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.4",
     "pug-runtime": "^3.0.1",
     "pug-strip-comments": "^2.0.0",
     "pump": "^3.0.0",
@@ -27,12 +31,9 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
-    "autoprefixer": "^9.8.6",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.0.0",
-    "postcss": "^7.0.36",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.4"
+    "eslint-plugin-vue": "^7.0.0"
   },
   "eslintConfig": {
     "root": true,
