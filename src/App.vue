@@ -8,7 +8,7 @@
       div.bg-green-600.rounded-2xl.h-10.w-48.mx-auto(v-show="display" v-bind:class = "(delay === true)?'bounce-in-top':'bounce-out-top'")
         img.py-2.ml-3(src="../public/profile-tick.svg", alt="tick-mark", style="position: absolute")
         h1.text-white.ml-4.py-2.font-bold Login Successful
-      Stepper(:step = "step" @addStep="addStep")
+      Stepper(:step = "step" @addStep="addStep" :spotifyToken="token")
   Particles#tsparticles(:options="options")
 </template>
 

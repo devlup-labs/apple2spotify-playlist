@@ -36,6 +36,9 @@ import axios from "axios";
 import loader from "./loader";
 
 export default {
+  props:[
+    'spotifyToken','step'
+  ],
   components: { loader },
   data() {
     return {
@@ -53,6 +56,8 @@ export default {
         length: null,
         songs: [],
       },
+      songsUri:[],
+      songsNotFound:[],
       playlistLength: 0,
       playlistCode: "",
       token: "apple_token",
@@ -142,6 +147,40 @@ export default {
           }
         );
       }
+      this.searchingSongsInSpotify()
+    },
+    searchingSongsInSpotify() {
+      this.songsUri.length=0
+      this.songsNotFound.length=0
+      this.playlist["songs"].forEach((song) => {
+        axios
+          .get("https://api.spotify.com/v1/search", {
+            headers: {
+              Authorization: "Bearer " + this.spotifyToken,
+            },
+            params: {
+              q: "track:"+song.songname+" artist:"+song.artist,
+              type: "track",
+            },
+          })
+          .then((res) => {
+            let items = res.data.tracks.items;
+            let i = 0
+            while( items.length>i) {
+              if (items[i].artists[0].name.toUpperCase() == song.artist.toUpperCase() && items[i].name.toUpperCase() == song.songname.toUpperCase()) {
+                this.songsUri.push(items[i].uri);
+                break;
+              }
+              i++
+            }
+            if(items.length==i ){
+              this.songsNotFound.push(song.songname)
+            }
+          })
+          .catch((err)=>{
+            console.log(err)
+          });
+      });
       this.createEmptyPlaylist();
     },
     async createEmptyPlaylist() {
