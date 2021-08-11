@@ -39,7 +39,7 @@ export default {
     return {
       message: "",
       started: false,
-      clientId: "SPOTIFY_CLIENT_ID",
+      clientId: "3cd6a99b035349569a18c90f8e7aea07",
       redirectUri: "http://localhost:8080/",
       spotifyScopes: "user-read-email playlist-modify-public playlist-modify-private",
       pLink: "",
