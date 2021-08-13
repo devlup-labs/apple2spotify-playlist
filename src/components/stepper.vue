@@ -44,7 +44,6 @@ export default {
     return {
       message: "",
       started: false,
-      step: 1,
       clientId: "SPOTIFY_CLIENT_ID",
       redirectUri: "http://localhost:8080/",
       spotifyScopes:
@@ -60,6 +59,7 @@ export default {
       songsNotFound:[],
       playlistLength: 0,
       playlistCode: "",
+      playlistId: "",
       token: "apple_token",
     };
   },
@@ -77,16 +77,12 @@ export default {
               this.message = "Done";
               setTimeout(() => {
                 this.started = false;
-                this.step += 1;
+                this.$emit('addStep',this.step);
               }, 2000);
             }, 2000);
           }, 2000);
         }, 2000);
       }, 2000);
-    },
-
-    addStep() {
-      this.step += 1;
     },
     loggingToSpotify() {
       var url = `https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.spotifyScopes}&state=34fFs29kd09`;
@@ -107,14 +103,13 @@ export default {
           var data = response.data;
           this.playlist.name = data.data[0]["attributes"]["name"];
           console.log(this.playlist.name)
-          this.playlist["length"] =
-            data["data"][0]["relationships"]["tracks"]["data"].length;
+            this.getSongsFromApple();
         },
         () => {
           console.error();
         }
       );
-      this.getSongsFromApple();
+      
     },
     async getSongsFromApple() {
       while (this.playlist["length"] % 100 === 0) {
@@ -141,13 +136,30 @@ export default {
                 artist: artistName,
               });
             }
+            this.searchingSongsInSpotify();
           },
           (error) => {
             console.log(error);
           }
         );
       }
-      this.searchingSongsInSpotify()
+      
+    },
+    addSongsToPlaylist(){
+      let token = this.$parent.token;
+
+      axios({
+        method:'post',
+        url: 	"https://cors.darpan.online/https://api.spotify.com/v1/playlists/" + this.playlistId + "/tracks/",
+        data:JSON.stringify({"uris": this.songsUri}),
+        headers:{'Authorization' : "Bearer "+ String(token),
+          'Content-type' : 'application/json',   
+        }
+      }).then((res)=>{
+        console.log(res.data);
+      }).catch((err)=>{
+        console.error(err);
+      })
     },
     searchingSongsInSpotify() {
       this.songsUri.length=0
@@ -186,8 +198,8 @@ export default {
     async createEmptyPlaylist() {
     let userId = this.$parent.userId
     let token = this.$parent.token
-    let playlistId = "";
     let Name = this.playlist.name;
+    let playlistId = '';
     var data = {
     name: String(Name),
     public: !this.isprivate
@@ -202,9 +214,12 @@ export default {
       JSON.stringify(data),
       {headers})
       .then(res => {playlistId = String(res.data.uri)
-      console.log("playid:", playlistId)})
+      this.playlistId = String(res.data.id)
+      console.log("playid:", playlistId);
+      this.addSongsToPlaylist();
+      })
       .catch(err => err)
-  },
+  }
   },
 };
 </script>
@@ -224,4 +239,5 @@ export default {
 .btn {
   position: relative;
 }
+
 </style>
