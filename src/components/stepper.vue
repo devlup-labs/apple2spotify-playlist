@@ -136,30 +136,38 @@ export default {
                 artist: artistName,
               });
             }
-            this.searchingSongsInSpotify();
           },
           (error) => {
             console.log(error);
           }
         );
       }
-      
+      this.searchingSongsInSpotify();
     },
-    addSongsToPlaylist(){
+    async addSongsToPlaylist(){
       let token = this.$parent.token;
-
-      axios({
-        method:'post',
-        url: 	"https://cors.darpan.online/https://api.spotify.com/v1/playlists/" + this.playlistId + "/tracks/",
-        data:JSON.stringify({"uris": this.songsUri}),
-        headers:{'Authorization' : "Bearer "+ String(token),
-          'Content-type' : 'application/json',   
+      var j = 0;
+      var uriArray;
+      for( j =0; j<this.songsUri.length; j+100){
+        if(this.songsUri.length -j >100){
+            uriArray = this.songsUri.splice(j,j+100);
         }
-      }).then((res)=>{
-        console.log(res.data);
-      }).catch((err)=>{
-        console.error(err);
-      })
+        else{
+            uriArray = this.songsUri.splice(j,this.songsUri.length);
+        }  
+        await axios({
+          method:'post',
+          url: 	"https://cors.darpan.online/https://api.spotify.com/v1/playlists/" + this.playlistId + "/tracks/",
+          data:JSON.stringify({"uris": uriArray}),
+          headers:{'Authorization' : "Bearer "+ String(token),
+            'Content-type' : 'application/json',   
+          }
+        }).then((res)=>{
+          console.log(res.data);
+        }).catch((err)=>{
+          console.error(err);
+        })  
+      }
     },
     searchingSongsInSpotify() {
       this.songsUri.length=0
