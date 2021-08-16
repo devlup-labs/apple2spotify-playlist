@@ -36,28 +36,25 @@ import axios from "axios";
 import loader from "./loader";
 
 export default {
-  props:[
-    'spotifyToken','step'
-  ],
+  props: ["spotifyToken", "step"],
   components: { loader },
   data() {
     return {
       message: "",
       started: false,
-      step: 1,
       clientId: "SPOTIFY_CLIENT_ID",
       redirectUri: "http://localhost:8080/",
       spotifyScopes:
         "user-read-email playlist-modify-public playlist-modify-private",
-      pLink: '',
+      pLink: "",
       isprivate: false,
       playlist: {
         name: "",
         length: null,
         songs: [],
       },
-      songsUri:[],
-      songsNotFound:[],
+      songsUri: [],
+      songsNotFound: [],
       playlistLength: 0,
       playlistCode: "",
       token: "apple_token",
@@ -77,16 +74,11 @@ export default {
               this.message = "Done";
               setTimeout(() => {
                 this.started = false;
-                this.step += 1;
               }, 2000);
             }, 2000);
           }, 2000);
         }, 2000);
       }, 2000);
-    },
-
-    addStep() {
-      this.step += 1;
     },
     loggingToSpotify() {
       var url = `https://accounts.spotify.com/authorize?client_id=${this.clientId}&response_type=code&redirect_uri=${this.redirectUri}&scope=${this.spotifyScopes}&state=34fFs29kd09`;
@@ -106,9 +98,7 @@ export default {
         (response) => {
           var data = response.data;
           this.playlist.name = data.data[0]["attributes"]["name"];
-          console.log(this.playlist.name)
-          this.playlist["length"] =
-            data["data"][0]["relationships"]["tracks"]["data"].length;
+          console.log(this.playlist.name);
         },
         () => {
           console.error();
@@ -124,12 +114,12 @@ export default {
           this.playlistCode +
           "/tracks/?offset=" +
           this.playlistLength;
-        await axios({
-          method: "get",
-          url: url,
-          headers: { Authorization: this.token },
-        }).then(
-          (response) => {
+        try {
+          await axios({
+            method: "get",
+            url: url,
+            headers: { Authorization: this.token },
+          }).then((response) => {
             var data = response.data;
             this.playlistLength = data["data"].length;
             this.playlist["length"] += this.playlistLength;
@@ -141,17 +131,17 @@ export default {
                 artist: artistName,
               });
             }
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
+          });
+        } catch (error) {
+          console.log(error);
+          break;
+        }
       }
-      this.searchingSongsInSpotify()
+      this.searchingSongsInSpotify();
     },
     searchingSongsInSpotify() {
-      this.songsUri.length=0
-      this.songsNotFound.length=0
+      this.songsUri.length = 0;
+      this.songsNotFound.length = 0;
       this.playlist["songs"].forEach((song) => {
         axios
           .get("https://api.spotify.com/v1/search", {
@@ -159,52 +149,63 @@ export default {
               Authorization: "Bearer " + this.spotifyToken,
             },
             params: {
-              q: "track:"+song.songname+" artist:"+song.artist,
+              q: "track:" + song.songname + " artist:" + song.artist,
               type: "track",
             },
           })
           .then((res) => {
             let items = res.data.tracks.items;
-            let i = 0
-            while( items.length>i) {
-              if (items[i].artists[0].name.toUpperCase() == song.artist.toUpperCase() && items[i].name.toUpperCase() == song.songname.toUpperCase()) {
+            let i = 0;
+            while (items.length > i) {
+              if (
+                items[i].artists[0].name.toUpperCase() ==
+                  song.artist.toUpperCase() &&
+                items[i].name.toUpperCase() == song.songname.toUpperCase()
+              ) {
                 this.songsUri.push(items[i].uri);
                 break;
               }
-              i++
+              i++;
             }
-            if(items.length==i ){
-              this.songsNotFound.push(song.songname)
+            if (items.length == i) {
+              this.songsNotFound.push(song.songname);
             }
           })
-          .catch((err)=>{
-            console.log(err)
+          .catch((err) => {
+            console.log(err);
           });
       });
       this.createEmptyPlaylist();
     },
     async createEmptyPlaylist() {
-    let userId = this.$parent.userId
-    let token = this.$parent.token
-    let playlistId = "";
-    let Name = this.playlist.name;
-    var data = {
-    name: String(Name),
-    public: !this.isprivate
-  }
-    var headers = {
-      'Content-Type': 'application/json',
-      'Authorization': "Bearer  "+ String(token)
-    }
+      let userId = this.$parent.userId;
+      let token = this.$parent.token;
+      let playlistId = "";
+      let Name = this.playlist.name;
+      var data = {
+        name: String(Name),
+        public: !this.isprivate,
+      };
+      var headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer  " + String(token),
+      };
 
-    await axios.post(
-      "https://cors.darpan.online/https://api.spotify.com/v1/users/"+userId+"/playlists",
-      JSON.stringify(data),
-      {headers})
-      .then(res => {playlistId = String(res.data.uri)
-      console.log("playid:", playlistId)})
-      .catch(err => err)
-  },
+      await axios
+        .post(
+          "https://cors.darpan.online/https://api.spotify.com/v1/users/" +
+            userId +
+            "/playlists",
+          JSON.stringify(data),
+          { headers }
+        )
+        .then((res) => {
+          playlistId = String(res.data.uri);
+          console.log("playid:", playlistId);
+        })
+        .catch((err) => err);
+      this.$emit("addStep", this.step);
+    },
   },
 };
 </script>
