@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@tailwindcss/forms": "^0.3.3",
     "autoprefixer": "^9.8.6",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
@@ -19,10 +20,10 @@
     "pug-load": "^3.0.0",
     "pug-parser": "^6.0.0",
     "pug-plain-loader": "^1.1.0",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.4",
     "pug-runtime": "^3.0.1",
     "pug-strip-comments": "^2.0.0",
     "pump": "^3.0.0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.4",
     "tsparticles": "^1.31.1",
     "vue": "^3.1.4"
   },

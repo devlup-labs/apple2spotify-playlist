@@ -17,9 +17,9 @@ export default {
 
   created() {
     var interval = setInterval(() => {
-      if (this.percentage <= 100) this.percentage += 0.1;
+      if (this.percentage <= 100) this.percentage += 0.2;
       else clearInterval(interval);
-    }, 7);
+    }, 8);
   },
 };
 </script>
