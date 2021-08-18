@@ -36,9 +36,7 @@ import axios from "axios";
 import loader from "./loader";
 
 export default {
-  props:[
-    'spotifyToken','step'
-  ],
+  props: ["spotifyToken", "step"],
   components: { loader },
   data() {
     return {
@@ -48,15 +46,15 @@ export default {
       redirectUri: "http://localhost:8080/",
       spotifyScopes:
         "user-read-email playlist-modify-public playlist-modify-private",
-      pLink: '',
+      pLink: "",
       isprivate: false,
       playlist: {
         name: "",
         length: null,
         songs: [],
       },
-      songsUri:[],
-      songsNotFound:[],
+      songsUri: [],
+      songsNotFound: [],
       playlistLength: 0,
       playlistCode: "",
       playlistId: "",
@@ -77,7 +75,7 @@ export default {
               this.message = "Done";
               setTimeout(() => {
                 this.started = false;
-                this.$emit('addStep',this.step);
+                this.$emit("addStep", this.step);
               }, 2000);
             }, 2000);
           }, 2000);
@@ -102,14 +100,13 @@ export default {
         (response) => {
           var data = response.data;
           this.playlist.name = data.data[0]["attributes"]["name"];
-          console.log(this.playlist.name)
-            this.getSongsFromApple();
+          console.log(this.playlist.name);
+          this.getSongsFromApple();
         },
         () => {
           console.error();
         }
       );
-      
     },
     async getSongsFromApple() {
       while (this.playlist["length"] % 100 === 0) {
@@ -119,152 +116,168 @@ export default {
           this.playlistCode +
           "/tracks/?offset=" +
           this.playlistLength;
-        await axios({
-          method: "get",
-          url: url,
-          headers: { Authorization: this.token },
-        }).then(
-          (response) => {
+        try {
+          await axios({
+            method: "get",
+            url: url,
+            headers: { Authorization: this.token },
+          }).then((response) => {
             var data = response.data;
             this.playlistLength = data["data"].length;
             this.playlist["length"] += this.playlistLength;
             for (let i = 0; i < this.playlistLength; i++) {
               let songName = data["data"][i]["attributes"]["name"];
               let artistName = data["data"][i]["attributes"]["artistName"];
-              let artistArray= artistName.split(', ')
-              let last=artistArray[artistArray.length-1]
-              artistArray=artistArray.slice(0,artistArray.length-1)
-              artistArray=artistArray.concat(last.split(' & '))
+              let artistArray = artistName.split(", ");
+              let last = artistArray[artistArray.length - 1];
+              artistArray = artistArray.slice(0, artistArray.length - 1);
+              artistArray = artistArray.concat(last.split(" & "));
               this.playlist["songs"].push({
                 songname: songName,
                 artist: artistArray,
-                artistOriginal:artistName,
-                songnameTrim:songName.split(' (')[0]
+                artistOriginal: artistName,
+                songnameTrim: songName.split(" (")[0],
               });
             }
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
+          });
+        } catch (error) {
+          console.log(error);
+          break;
+        }
       }
       this.searchingSongsInSpotify();
     },
-    async addSongsToPlaylist(){
+    async addSongsToPlaylist() {
       let token = this.$parent.token;
       var j = 0;
       var uriArray;
-      for( j =0; j<this.songsUri.length; j+100){
-        if(this.songsUri.length -j >100){
-            uriArray = this.songsUri.splice(j,j+100);
+      for (j = 0; j < this.songsUri.length; j + 100) {
+        if (this.songsUri.length - j > 100) {
+          uriArray = this.songsUri.splice(j, j + 100);
+        } else {
+          uriArray = this.songsUri.splice(j, this.songsUri.length);
         }
-        else{
-            uriArray = this.songsUri.splice(j,this.songsUri.length);
-        }  
         await axios({
-          method:'post',
-          url: 	"https://cors.darpan.online/https://api.spotify.com/v1/playlists/" + this.playlistId + "/tracks/",
-          data:JSON.stringify({"uris": uriArray}),
-          headers:{'Authorization' : "Bearer "+ String(token),
-            'Content-type' : 'application/json',   
-          }
-        }).then((res)=>{
-          console.log(res.data);
-        }).catch((err)=>{
-          console.error(err);
-        })  
+          method: "post",
+          url:
+            "https://cors.darpan.online/https://api.spotify.com/v1/playlists/" +
+            this.playlistId +
+            "/tracks/",
+          data: JSON.stringify({ uris: uriArray }),
+          headers: {
+            Authorization: "Bearer " + String(token),
+            "Content-type": "application/json",
+          },
+        })
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
       }
     },
     searchingSongsInSpotify() {
-      this.songsUri.length=0
-      this.songsNotFound.length=0
-      function compare(arr1,arr2){
-        let k=0
-        let min=Math.min(arr1.length,arr2.length)
-        let arr3=[]
-        arr1.forEach(item=>{
-          arr3.push(item.name.toUpperCase())
-        })
+      this.songsUri.length = 0;
+      this.songsNotFound.length = 0;
+      function compare(arr1, arr2) {
+        let k = 0;
+        let min = Math.min(arr1.length, arr2.length);
+        let arr3 = [];
+        arr1.forEach((item) => {
+          arr3.push(item.name.toUpperCase());
+        });
         for (let j = 0; j < arr2.length; j++) {
           arr2[j] = arr2[j].toUpperCase();
-        }    
-        if(arr2.length==min){
-          while(k<min){
-            if(!arr3.includes(arr2[k].toUpperCase())){
-              return false
-            }
-            k++
-        }}else{
-          while(k<min){
-            if(!arr2.includes(arr3[k])){
-              return false
-            }
-            k++
-          }                
         }
-        return true
+        if (arr2.length == min) {
+          while (k < min) {
+            if (!arr3.includes(arr2[k].toUpperCase())) {
+              return false;
+            }
+            k++;
+          }
+        } else {
+          while (k < min) {
+            if (!arr2.includes(arr3[k])) {
+              return false;
+            }
+            k++;
+          }
+        }
+        return true;
       }
       this.playlist["songs"].forEach((song) => {
-        let artists=''
-        song.artist.forEach((artist)=>{
-          artists+=artist+" "
-        })
-        artists.slice(0,artists.length-1)
+        let artists = "";
+        song.artist.forEach((artist) => {
+          artists += artist + " ";
+        });
+        artists.slice(0, artists.length - 1);
         axios
           .get("https://api.spotify.com/v1/search", {
             headers: {
               Authorization: "Bearer " + this.spotifyToken,
             },
             params: {
-              q: "track:"+song.songnameTrim+" artist:"+artists,
+              q: "track:" + song.songnameTrim + " artist:" + artists,
               type: "track",
             },
           })
           .then((res) => {
             let items = res.data.tracks.items;
-            let i = 0
-            while( items.length>i) {
-              if ((compare(items[i].artists, song.artist) || items[i].artists[0].name== song.artistOriginal ) && (items[i].name.toUpperCase() == song.songnameTrim.toUpperCase() || items[i].name.toUpperCase() == song.songname.toUpperCase() )) {
+            let i = 0;
+            while (items.length > i) {
+              if (
+                (compare(items[i].artists, song.artist) ||
+                  items[i].artists[0].name == song.artistOriginal) &&
+                (items[i].name.toUpperCase() ==
+                  song.songnameTrim.toUpperCase() ||
+                  items[i].name.toUpperCase() == song.songname.toUpperCase())
+              ) {
                 this.songsUri.push(items[i].uri);
                 break;
               }
-              i++
+              i++;
             }
-            if(items.length==i ){
-              this.songsNotFound.push(song.songname)
+            if (items.length == i) {
+              this.songsNotFound.push(song.songname);
             }
           })
-          .catch((err)=>{
-            console.log(err)
+          .catch((err) => {
+            console.log(err);
           });
       });
       this.createEmptyPlaylist();
     },
     async createEmptyPlaylist() {
-    let userId = this.$parent.userId
-    let token = this.$parent.token
-    let Name = this.playlist.name;
-    let playlistId = '';
-    var data = {
-    name: String(Name),
-    public: !this.isprivate
-  }
-    var headers = {
-      'Content-Type': 'application/json',
-      'Authorization': "Bearer  "+ String(token)
-    }
+      let userId = this.$parent.userId;
+      let token = this.$parent.token;
+      let playlistId = "";
+      let Name = this.playlist.name;
+      var data = {
+        name: String(Name),
+        public: !this.isprivate,
+      };
+      var headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer  " + String(token),
+      };
 
-    await axios.post(
-      "https://cors.darpan.online/https://api.spotify.com/v1/users/"+userId+"/playlists",
-      JSON.stringify(data),
-      {headers})
-      .then(res => {playlistId = String(res.data.uri)
-      this.playlistId = String(res.data.id)
-      console.log("playid:", playlistId);
-      this.addSongsToPlaylist();
-      })
-      .catch(err => err)
-  }
+      await axios
+        .post(
+          "https://cors.darpan.online/https://api.spotify.com/v1/users/" +
+            userId +
+            "/playlists",
+          JSON.stringify(data),
+          { headers }
+        )
+        .then((res) => {
+          playlistId = String(res.data.uri);
+          console.log("playid:", playlistId);
+        })
+        .catch((err) => err);
+      this.$emit("addStep", this.step);
+    },
   },
 };
 </script>
@@ -284,5 +297,4 @@ export default {
 .btn {
   position: relative;
 }
-
 </style>
