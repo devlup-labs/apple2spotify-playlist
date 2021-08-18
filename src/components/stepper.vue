@@ -1,5 +1,5 @@
 <template lang="pug">
-.stepper.pt-10.mx-4.text-left(class="md:mx-12")
+.stepper.mx-4.text-left(class="md:mx-12")
   div(class="flex justify-start")
     img.imageHeight(v-if="step === 1" width="40" height="36" alt="Eo circle blue number-1" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Eo_circle_blue_number-1.svg/512px-Eo_circle_blue_number-1.svg.png")
     img.imageHeight(v-else src="../../public/icons8-ok.svg", alt="check_mark")
@@ -52,7 +52,8 @@
           path(d="M10.896 2H8.75V.75a.75.75 0 00-1.5 0V2H5.104a.25.25 0 00-.177.427l2.896 2.896a.25.25 0 00.354 0l2.896-2.896A.25.25 0 0010.896 2zM8.75 15.25a.75.75 0 01-1.5 0V14H5.104a.25.25 0 01-.177-.427l2.896-2.896a.25.25 0 01.354 0l2.896 2.896a.25.25 0 01-.177.427H8.75v1.25zm-6.5-6.5a.75.75 0 000-1.5h-.5a.75.75 0 000 1.5h.5zM6 8a.75.75 0 01-.75.75h-.5a.75.75 0 010-1.5h.5A.75.75 0 016 8zm2.25.75a.75.75 0 000-1.5h-.5a.75.75 0 000 1.5h.5zM12 8a.75.75 0 01-.75.75h-.5a.75.75 0 010-1.5h.5A.75.75 0 0112 8zm2.25.75a.75.75 0 000-1.5h-.5a.75.75 0 000 1.5h.5z")
         svg(xmlns="http://www.w3.org/2000/svg" v-else aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="fill-current mt-1 text-white octicon octicon-unfold position-relative mr-1")
           path(d="M8.177.677l2.896 2.896a.25.25 0 01-.177.427H8.75v1.25a.75.75 0 01-1.5 0V4H5.104a.25.25 0 01-.177-.427L7.823.677a.25.25 0 01.354 0zM7.25 10.75a.75.75 0 011.5 0V12h2.146a.25.25 0 01.177.427l-2.896 2.896a.25.25 0 01-.354 0l-2.896-2.896A.25.25 0 015.104 12H7.25v-1.25zm-5-2a.75.75 0 000-1.5h-.5a.75.75 0 000 1.5h.5zM6 8a.75.75 0 01-.75.75h-.5a.75.75 0 010-1.5h.5A.75.75 0 016 8zm2.25.75a.75.75 0 000-1.5h-.5a.75.75 0 000 1.5h.5zM12 8a.75.75 0 01-.75.75h-.5a.75.75 0 010-1.5h.5A.75.75 0 0112 8zm2.25.75a.75.75 0 000-1.5h-.5a.75.75 0 000 1.5h.5z")
-        span.tracking-widest.px-2 Show Unavailable Songs
+        span.tracking-widest.px-2(v-if="showNotFoundSongs") Hide Unavailable Songs
+        span.tracking-widest.px-2(v-else) Show Unavailable Songs
     div.bg-white.bg-opacity-10.rounded-3xl(v-if="showNotFoundSongs")
       h1.pt-3.ml-4.text-white.text-2xl.font-bold Unavailable Songs:
       li.ml-4.text-white.py-2(v-for="songNotFound in songsNotFound") {{ songNotFound }}
@@ -268,7 +269,7 @@ export default {
 
 <style>
 .stepper {
-  height: 800px;
+  height: 550px;
 }
 .box {
   margin-left: 20px;
