@@ -2,7 +2,7 @@
   <div class="backdrop">
     <div class="modal flex justify-center" v-if="render">
       <div class="loader">
-        <bar />
+        <bar :value="value" />
           <div class="status text-center">
             <h1>{{ text }}</h1>
           </div>
@@ -16,7 +16,7 @@ import bar from "./bar";
 
 export default {
   name: "loader",
-  props: ["text", "render"],
+  props: ["text", "render", "value"],
   components: { bar },
 };
 </script>
@@ -24,7 +24,7 @@ export default {
 <style>
 .modal {
   width: 36%;
-  padding: 20px;
+  padding-bottom: 20px;
   padding-top: 40px;
   margin: auto;
   margin-top: 200px;
@@ -48,5 +48,6 @@ export default {
 
 .loader {
   border-radius: 10px;
+  width: 75%;
 }
 </style>

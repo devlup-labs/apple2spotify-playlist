@@ -28,7 +28,7 @@
       button(class="transition duration-100 transform px-6 py-1 m-4 hover:scale-110 mt-10 pt-2 pb-3 text-black rounded-full bg-white" @click="getPlaylistInfoFromApple")
         span.tracking-widest.px-4.font-bold CONVERT
   div(v-if="this.started")
-    loader(:render="this.started" :text="this.message")
+    loader(:render="this.started" :text="this.message" :value="this.value")
   br
   div(class="flex justify-start")
     img.imageHeight(v-if="step != 3" width="40" height="36" alt="Eo circle grey number-3" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Eo_circle_grey_number-3.svg/512px-Eo_circle_grey_number-3.svg.png")
@@ -69,6 +69,7 @@ export default {
   data() {
     return {
       message: "",
+      value: 0,
       started: false,
       clientId: "SPOTIFY_CLIENT_ID",
       redirectUri: "http://localhost:8080/",
@@ -87,7 +88,8 @@ export default {
       playlistLength: 0,
       playlistCode: "",
       playlistId: "",
-      token: "apple_token",
+      token:
+        "APPLE_TOKEN",
       spotifyPlaylistLink: "",
       spotifyEmbedPlaylistLink: "",
       showNotFoundSongs: false,
@@ -101,29 +103,7 @@ export default {
       this.percentSongsFound = 0;
       this.songsUri = [];
       this.playlist["length"] = 0;
-      this.songsNotFound = [],
-      this.playlist["songs"] = [];
-    },
-
-    changeMessage() {
-      this.started = true;
-      this.message = "Extracting songs";
-      setTimeout(() => {
-        this.message = "Searching songs";
-        setTimeout(() => {
-          this.message = "Creating playlist";
-          setTimeout(() => {
-            this.message = "Adding songs";
-            setTimeout(() => {
-              this.message = "Done";
-              setTimeout(() => {
-                this.started = false;
-                this.$emit("addStep", this.step);
-              }, 2000);
-            }, 2000);
-          }, 2000);
-        }, 2000);
-      }, 2000);
+      (this.songsNotFound = []), (this.playlist["songs"] = []);
     },
 
     toggleUnavailableSongs() {
@@ -135,6 +115,8 @@ export default {
       window.location.href = url;
     },
     async getPlaylistInfoFromApple() {
+      this.started = true;
+      this.message = "Extracting Songs";
       this.playlistCode = this.pLink.split("/");
       this.playlistCode = this.playlistCode[this.playlistCode.length - 1];
       var pLink =
@@ -143,7 +125,7 @@ export default {
       await axios({
         method: "get",
         url: pLink,
-        headers: { Authorization: this.token },
+        headers: { Authorization: "Bearer " + this.token },
       }).then(
         (response) => {
           var data = response.data;
@@ -168,7 +150,7 @@ export default {
           await axios({
             method: "get",
             url: url,
-            headers: { Authorization: this.token },
+            headers: { Authorization: "Bearer " + this.token },
           }).then((response) => {
             var data = response.data;
             this.playlistLength = data["data"].length;
@@ -195,37 +177,10 @@ export default {
       }
       this.searchingSongsInSpotify();
     },
-    async addSongsToPlaylist() {
-      let token = this.$parent.token;
-      var j = 0;
-      var uriArray;
-      for (j = 0; j < this.songsUri.length; j + 100) {
-        if (this.songsUri.length - j > 100) {
-          uriArray = this.songsUri.splice(j, j + 100);
-        } else {
-          uriArray = this.songsUri.splice(j, this.songsUri.length);
-        }
-        await axios({
-          method: "post",
-          url:
-            "https://cors.darpan.online/https://api.spotify.com/v1/playlists/" +
-            this.playlistId +
-            "/tracks/",
-          data: JSON.stringify({ uris: uriArray }),
-          headers: {
-            Authorization: "Bearer " + String(token),
-            "Content-type": "application/json",
-          },
-        })
-          .then((res) => {
-            console.log(res.data);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      }
-    },
+
     searchingSongsInSpotify() {
+      this.message = "Searching Songs";
+      this.value = 25;
       this.songsUri.length = 0;
       this.songsNotFound.length = 0;
       function compare(arr1, arr2) {
@@ -298,9 +253,10 @@ export default {
       this.createEmptyPlaylist();
     },
     async createEmptyPlaylist() {
+      this.message = "Creating Playlist";
+      this.value = 50;
       let userId = this.$parent.userId;
       let token = this.$parent.token;
-      let playlistId = "";
       let Name = this.playlist.name;
       var data = {
         name: String(Name),
@@ -320,18 +276,60 @@ export default {
           { headers }
         )
         .then((res) => {
-          playlistId = String(res.data.uri);
+          this.playlistId = String(res.data.uri);
           this.spotifyEmbedPlaylistLink =
-            "https://open.spotify.com/embed/playlist/" + playlistId.slice(17);
+            "https://open.spotify.com/embed/playlist/" +
+            this.playlistId.slice(17);
+          console.log(this.spotifyEmbedPlaylistLink);
           this.spotifyPlaylistLink =
-            "https://open.spotify.com/playlist/" + playlistId.slice(17);
-          console.log("playid:", playlistId);
+            "https://open.spotify.com/playlist/" + this.playlistId.slice(17);
+          this.addSongsToPlaylist();
         })
         .catch((err) => err);
-      this.$emit("addStep", this.step);
+    },
+
+    async addSongsToPlaylist() {
+      this.message = "Adding Songs";
+      this.value = 75;
+      let token = this.$parent.token;
+      var j = 0;
+      let uriArray = [];
       this.percentSongsFound = Math.floor(
         (this.songsUri.length / this.playlist["length"]) * 100
       );
+      for (j = 0; j < this.songsUri.length; j + 100) {
+        if (this.songsUri.length - j > 100) {
+          uriArray = this.songsUri.splice(j, j + 100);
+        } else {
+          uriArray = this.songsUri.splice(j, this.songsUri.length);
+        }
+
+        await axios({
+          method: "post",
+          url:
+            "https://cors.darpan.online/https://api.spotify.com/v1/playlists/" +
+            String(this.playlistId.slice(17)) +
+            "/tracks/",
+          data: JSON.stringify({ uris: uriArray }),
+          headers: {
+            Authorization: "Bearer " + String(token),
+            "Content-type": "application/json",
+          },
+        })
+          .then((res) => {
+            console.log(res.data);
+            this.value = 100;
+            this.message = "Done";
+            setTimeout(() => {
+              this.value = 0;
+              this.started = false;
+            }, 800);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+      this.$emit("addStep", this.step);
     },
   },
 };
