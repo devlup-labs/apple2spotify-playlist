@@ -71,7 +71,7 @@ export default {
       message: "",
       value: 0,
       started: false,
-      clientId: "329e6f2766e643949e5bffb39526933e",
+      clientId: "SPOTIFY_CLIENT_ID",
       redirectUri: "http://localhost:8080/",
       spotifyScopes:
         "user-read-email playlist-modify-public playlist-modify-private",
@@ -89,7 +89,7 @@ export default {
       playlistCode: "",
       playlistId: "",
       token:
-        "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IldlYlBsYXlLaWQifQ.eyJpc3MiOiJBTVBXZWJQbGF5IiwiaWF0IjoxNjI4MTgzNjEyLCJleHAiOjE2NDM3MzU2MTJ9.lrBl4x-xa1H2Ea83oZJcsb3eeqxLzwpVWZMvOCx6YWf3BeMWvAazcqmbIuWc8VUUKaGWI5kS7gzvSk-MYhYmqg",
+        "APPLE_TOKEN",
       spotifyPlaylistLink: "",
       spotifyEmbedPlaylistLink: "",
       showNotFoundSongs: false,
