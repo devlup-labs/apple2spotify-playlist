@@ -64,8 +64,8 @@ export default {
         grant_type: "authorization_code",
         code: this.code,
         redirect_uri: "http://localhost:8080/",
-        client_id: "SPOTIFY_CLIENT_ID",
-        client_secret: "SPOTIFY_CLIENT_SECRET",
+        client_id: "329e6f2766e643949e5bffb39526933e",
+        client_secret: "e6903193af18422ea210cf9caf9c8514",
       });
 
       data = data.toString();

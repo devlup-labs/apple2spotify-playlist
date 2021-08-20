@@ -1,33 +1,24 @@
 <template>
-  <div class="container">
     <div class="loading-bar">
-      <div class="percentage" v-bind:style="{ width: percentage + '%' }"></div>
+      <div class="percentage" v-bind:style="{ width: String(value) + '%' }"></div>
     </div>
-  </div>
 </template>
 
 <script>
 export default {
   name: "bar",
+  props: ["value"],
   data: () => {
     return {
       percentage: 0,
     };
   },
-
-  created() {
-    var interval = setInterval(() => {
-      if (this.percentage <= 100) this.percentage += 0.2;
-      else clearInterval(interval);
-    }, 8);
-  },
-};
+}
 </script>
 
 <style>
 .loading-bar {
   position: relative;
-  width: 400px;
   height: 30px;
   border-radius: 15px;
   overflow: hidden;
