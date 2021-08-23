@@ -83,13 +83,15 @@ export default {
         songs: [],
       },
       songsUri: [],
+      firstUriOnSearch: [],
       songsNotFound: [],
+      songsNotFoundOnSearch: [],
       percentSongsFound: 0,
       playlistLength: 0,
       playlistCode: "",
       playlistId: "",
       token:
-        "APPLE_TOKEN",
+        "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IldlYlBsYXlLaWQifQ.eyJpc3MiOiJBTVBXZWJQbGF5IiwiaWF0IjoxNjIyMjUxNTA1LCJleHAiOjE2Mzc4MDM1MDV9.qaZGFoe0pn7-8K0MDbAp2c35nEtrQKz_v4UN2BF4jR7NR2vGKHTzurwsk-rZZUvVjtdqSj5Pli5AKzGn5_OLbQ",
       spotifyPlaylistLink: "",
       spotifyEmbedPlaylistLink: "",
       showNotFoundSongs: false,
@@ -97,11 +99,14 @@ export default {
   },
   methods: {
     convertAnotherPlaylist() {
+      this.showNotFoundSongs=false;
       this.pLink = "";
       this.isprivate = false;
       this.$emit("gotoStep2", this.step);
       this.percentSongsFound = 0;
       this.songsUri = [];
+      this.firstUriOnSearch=[];
+      this.songsNotFoundOnSearch=[];
       this.playlist["length"] = 0;
       (this.songsNotFound = []), (this.playlist["songs"] = []);
     },
@@ -180,9 +185,7 @@ export default {
 
     searchingSongsInSpotify() {
       this.message = "Searching Songs";
-      this.value = 25;
-      this.songsUri.length = 0;
-      this.songsNotFound.length = 0;
+      this.value = 30;
       function compare(arr1, arr2) {
         let k = 0;
         let min = Math.min(arr1.length, arr2.length);
@@ -242,8 +245,12 @@ export default {
               }
               i++;
             }
-            if (items.length == i) {
+            if(items.length==0){
+              this.songsNotFoundOnSearch.push(song.songname)
+            }
+            if (items.length == i && items.length!=0) {
               this.songsNotFound.push(song.songname);
+              this.firstUriOnSearch.push(items[0].uri)
             }
           })
           .catch((err) => {
@@ -254,7 +261,7 @@ export default {
     },
     async createEmptyPlaylist() {
       this.message = "Creating Playlist";
-      this.value = 50;
+      this.value = 40;
       let userId = this.$parent.userId;
       let token = this.$parent.token;
       let Name = this.playlist.name;
@@ -283,25 +290,23 @@ export default {
           console.log(this.spotifyEmbedPlaylistLink);
           this.spotifyPlaylistLink =
             "https://open.spotify.com/playlist/" + this.playlistId.slice(17);
-          this.addSongsToPlaylist();
+          this.addSongsToPlaylist(this.songsUri, 1);
         })
         .catch((err) => err);
     },
 
-    async addSongsToPlaylist() {
+    async addSongsToPlaylist(songsUri, counter) {
       this.message = "Adding Songs";
-      this.value = 75;
+      this.value = 70;
+      let songsUriCopy= songsUri.slice()
       let token = this.$parent.token;
       var j = 0;
       let uriArray = [];
-      this.percentSongsFound = Math.floor(
-        (this.songsUri.length / this.playlist["length"]) * 100
-      );
-      for (j = 0; j < this.songsUri.length; j + 100) {
+      for (j = 0; j < songsUriCopy.length; j + 100) {
         if (this.songsUri.length - j > 100) {
-          uriArray = this.songsUri.splice(j, j + 100);
+          uriArray = songsUriCopy.splice(j, j + 100);
         } else {
-          uriArray = this.songsUri.splice(j, this.songsUri.length);
+          uriArray = songsUriCopy.splice(j, songsUriCopy.length);
         }
 
         await axios({
@@ -329,8 +334,24 @@ export default {
             console.error(err);
           });
       }
-      this.$emit("addStep", this.step);
+      if(counter==1){
+      this.percentSongsFound = Math.floor(
+        (this.songsUri.length / this.playlist["length"]) * 100
+      );
+      this.addFirstUris()
+      }else{
+        this.percentSongsFound=Math.floor(
+        ((this.songsUri.length + this.firstUriOnSearch.length) / this.playlist["length"]) * 100
+      );
+      }
     },
+    addFirstUris(){
+      if(this.percentSongsFound<96){
+        this.addSongsToPlaylist(this.firstUriOnSearch,2)
+      }
+      this.songsNotFound=this.songsNotFoundOnSearch
+      this.$emit("addStep", this.step)
+    }
   },
 };
 </script>
